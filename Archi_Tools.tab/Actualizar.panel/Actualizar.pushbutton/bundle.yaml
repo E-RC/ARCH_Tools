@@ -1,0 +1,13 @@
+title: "Actualizar"
+tooltip: |
+  Busca en GitHub una versión nueva de Archi_Tools y la instala. Siempre te
+  pregunta antes de actualizar, mostrándote la versión que tienes y los
+  cambios que trae.
+
+  Instrucciones:
+  1. Clic: consulta GitHub (necesita conexión a internet).
+  2. Si hay una versión nueva, te muestra los cambios y te pide confirmar.
+
+  Resultado: Archi_Tools queda actualizado; puedes recargar pyRevit al
+  terminar. Los cambios de ScheduleBoard requieren reiniciar Revit.
+author: "Archiplan-ER"

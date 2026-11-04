@@ -1,0 +1,21 @@
+title: "Crop a Ventana"
+author: "Archiplan-ER"
+tooltip: |
+  Ajusta la Crop Region de la VISTA ACTIVA a la porcion visible en pantalla,
+  dejando un margen interior para poder tomar los tiradores y afinarla a mano.
+
+  Instrucciones:
+  1. Encuadre la vista como la quiere (zoom / orbita).
+  2. Ejecute el comando: la crop region se ajusta a lo que ve, reducida al 85%
+     de la ventana (~7.5% de margen por lado).
+  3. Arrastre los tiradores para afinar el recorte.
+
+  No mueve la camara: el encuadre 3D se conserva intacto.
+  Solo modifica los limites en planta del recorte (X e Y); la profundidad
+  (near / far clip) queda igual.
+
+  Util cuando la crop region quedo corrupta o fuera del eje de vision y no
+  aparece en pantalla, caso tipico en vistas 3D en perspectiva.
+
+  Para cambiar el margen, edite MARGIN_FACTOR en script.py
+  (0.85 = actual; valores menores dejan mas margen).

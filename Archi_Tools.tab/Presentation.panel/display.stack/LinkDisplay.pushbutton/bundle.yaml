@@ -1,0 +1,13 @@
+title: "Link Display"
+author: "Archiplan-ER"
+tooltip: |
+  Gestiona en lote los Display Settings de los Revit Links (pestaña Revit Links de Visibility/Graphics).
+
+  Instrucciones:
+  1. Configure manualmente UN link de referencia en UNA vista (Basics, Model Categories, Annotation Categories, etc.).
+  2. Ejecute el comando.
+  3. Elija ese link/vista como ORIGEN y marque los links y vistas de DESTINO.
+  4. Aplicar: la configuración completa se replica a todas las combinaciones link x vista.
+
+  Tambien permite restablecer links a "By Host View" en lote.
+  Nota: si una vista tiene un View Template que controla los RVT Links, aplique directamente al template (aparece como [Template] en la lista de vistas).

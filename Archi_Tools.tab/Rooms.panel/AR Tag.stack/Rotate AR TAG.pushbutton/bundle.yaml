@@ -1,0 +1,11 @@
+title: "Rotate\nA/R TAG"
+author: "Archiplan-ER"
+tooltip: |
+  Alinea visualmente los Room Tags y Area Tags con la rotación de un muro o línea de contorno de área.
+  
+  Instrucciones:
+  1. Selecciona uno o más Room Tags o Area Tags en la vista actual.
+  2. Haz clic en este botón de la cinta 'Archi_Tools'.
+  3. Selecciona el muro o la línea de contorno de área (Area Boundary) que servirá como referencia de ángulo.
+  
+  El programa rotará automáticamente los tags para que queden paralelos a la referencia seleccionada.

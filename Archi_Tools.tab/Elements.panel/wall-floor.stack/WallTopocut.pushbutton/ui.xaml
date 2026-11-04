@@ -1,0 +1,190 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Corte de Muro con Toposolid" Height="380" Width="350"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F5F4" Foreground="#333333"
+        FontFamily="Lato, Segoe UI"
+        ResizeMode="NoResize">
+    
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="30" CornerRadius="0" GlassFrameThickness="0" UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <!-- Styles -->
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#FFFFF9"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="BorderBrush" Value="#C7C5CD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Margin" Value="0,5"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#F5F5F4"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#C7C5CD"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="#B26E63"/>
+            <Setter Property="Foreground" Value="#FFFFF9"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="7">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#9A5E54"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#874F47"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#C7C5CD"/>
+                                <Setter Property="Foreground" Value="#A1A1A0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#FFFFF9"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="BorderBrush" Value="#C7C5CD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="0"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#B26E63"/>
+                                <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title Bar -->
+        <Border Grid.Row="0" Background="#F5F5F4" BorderBrush="#C7C5CD" BorderThickness="0,0,0,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- Icon -->
+                <Image Grid.Column="0" Source="{Binding Icon, RelativeSource={RelativeSource AncestorType=Window}}" Width="16" Height="16" Margin="10,0,0,0" WindowChrome.IsHitTestVisibleInChrome="True"/>
+                
+                <TextBlock Grid.Column="1" Text="Corte de Muro con Toposolid" Foreground="#333333" FontFamily="Lato" FontWeight="Light" VerticalAlignment="Center" Margin="10,0,0,0" IsHitTestVisible="False"/>
+                
+                <Button Grid.Column="2" Content="✕" Width="30" Height="30" Background="Transparent" Foreground="#A1A1A0" BorderThickness="0" FontSize="14" WindowChrome.IsHitTestVisibleInChrome="True" Click="CloseButton_Click" Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Foreground" Value="#333333"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="1" Margin="20,15,20,20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Margin="0,0,0,15" HorizontalAlignment="Center">
+                <TextBlock Text="Corte Toposolid" FontSize="22" FontWeight="Light" Foreground="#333333" FontFamily="Lato" HorizontalAlignment="Center"/>
+                <Border Height="2" Width="40" Background="#B26E63" Margin="0,4,0,0" HorizontalAlignment="Center"/>
+            </StackPanel>
+
+            <TextBlock Grid.Row="1" Margin="0,5,0,5">
+                <Run Text="1. " Foreground="#B26E63" FontWeight="Bold" FontSize="11" FontFamily="Lato"/>
+                <Run Text="Selección de Muros:" Foreground="#333333" FontSize="11" FontFamily="Lato"/>
+            </TextBlock>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="130"/>
+                </Grid.ColumnDefinitions>
+                <Button Name="BtnSelectWalls" Grid.Column="0" Content="Seleccionar Muros" Margin="0,5,10,5" Click="BtnSelectWalls_Click" />
+                <TextBlock Name="TbSelectedWalls" Grid.Column="1" Text="0 seleccionados" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="#A1A1A0" FontSize="10" FontFamily="Lato"/>
+            </Grid>
+
+            <TextBlock Grid.Row="3" Margin="0,15,0,5">
+                <Run Text="2. " Foreground="#B26E63" FontWeight="Bold" FontSize="11" FontFamily="Lato"/>
+                <Run Text="Selección de Terreno:" Foreground="#333333" FontSize="11" FontFamily="Lato"/>
+            </TextBlock>
+            <Grid Grid.Row="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="130"/>
+                </Grid.ColumnDefinitions>
+                <Button Name="BtnSelectToposolid" Grid.Column="0" Content="Seleccionar Toposolids" Margin="0,5,10,5" Click="BtnSelectToposolid_Click" />
+                <TextBlock Name="TbSelectedToposolid" Grid.Column="1" Text="0 seleccionados" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="#A1A1A0" FontSize="10" FontFamily="Lato"/>
+            </Grid>
+
+            <StackPanel Grid.Row="5" Margin="0,15,0,0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="Altura de Desfase (m): " VerticalAlignment="Center" Margin="0,0,10,0" Foreground="#333333" FontSize="11" FontFamily="Lato"/>
+                <TextBox Name="TbOffset" Width="60" Text="0.50" TextAlignment="Center" FontFamily="Lato"/>
+            </StackPanel>
+
+            <Button Name="BtnExecute" Grid.Row="6" Content="Ejecutar Corte Automático" Style="{StaticResource PrimaryButton}" Height="40" Margin="0,20,0,0" Click="BtnExecute_Click" />
+        </Grid>
+    </Grid>
+</Window>

@@ -1,0 +1,13 @@
+title: "Wall-TopoCut"
+author: "Archiplan-ER"
+tooltip: |
+  Recorta la coronación de muros para seguir fielmente la pendiente de un terreno.
+
+  Instrucciones:
+  1. Ejecuta el comando.
+  2. Selecciona los muros que deseas cortar.
+  3. Selecciona uno o más Toposolids de referencia (pulsa Esc al terminar).
+  4. Define la altura de desfase (offset) y haz clic en Ejecutar.
+
+  La cara superior de cada muro se ajusta al terreno manteniendo el offset indicado.
+min_version: 2024

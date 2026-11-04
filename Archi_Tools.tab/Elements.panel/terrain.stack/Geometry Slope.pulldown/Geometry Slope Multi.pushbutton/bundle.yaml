@@ -1,0 +1,23 @@
+title: "Geometry Slope Multi"
+author: "Archiplan-ER"
+tooltip: |
+  Aplica pendientes desde 2 o mas aristas, cada una con su propio porcentaje.
+
+  Instrucciones:
+  1. Selecciona un Floor o Toposolid.
+  2. Selecciona 2 o mas aristas de apoyo y termina con Finish.
+  3. Ingresa el porcentaje (%) de cada arista. Mientras la ventana este
+     abierta, cada arista muestra su numero en la vista.
+
+  Cada arista conserva su cota y proyecta su nivel a lo largo de la losa: la
+  pendiente sube perpendicular a la arista, hacia el lado donde hay losa.
+
+  Donde se encuentran dos pendientes, la superficie quiebra y el script dibuja
+  ahi una linea de division. Donde no llega ninguna, la losa queda plana a la
+  cota de las aristas: entre dos aristas que se dan la espalda, por ejemplo.
+
+  Positivo sube al alejarse de la arista, negativo baja. Si las pendientes se
+  contradicen (por ejemplo +5% y -5% en dos aristas paralelas) avisa cual es el
+  conflicto y no modifica nada.
+
+  Para una sola arista usa Geometry Slope.

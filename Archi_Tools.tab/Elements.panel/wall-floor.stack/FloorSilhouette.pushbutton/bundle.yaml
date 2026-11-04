@@ -1,0 +1,12 @@
+title: "Floor Silhouette"
+author: "Archiplan-ER"
+context: "active-floor-plan"
+tooltip: |
+  Modifica la silueta de un pavimento restando el perímetro de los muros.
+  
+  Instrucciones:
+  1. Selecciona el suelo (Floor) a contornear.
+  2. Ejecuta la herramienta.
+  3. Selecciona los muros que intersectan el suelo (pulsa Esc al terminar).
+  
+  El pavimento se ajustará al contorno de los muros, manteniendo continuidad bajo las puertas.

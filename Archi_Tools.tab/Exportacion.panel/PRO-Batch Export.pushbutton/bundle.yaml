@@ -1,0 +1,13 @@
+title: "PRO-Batch\nExport"
+author: "Archiplan-ER"
+tooltip: |
+  Exporta láminas a DWG y PDF en lote, con nombres de archivo paramétricos según el estándar Archiplan.
+
+  Instrucciones:
+  1. Ejecuta el comando en el proyecto.
+  2. Marca las láminas a exportar (o carga un Print Set guardado).
+  3. Arma la regla de nombre con los campos de lámina, vista o parámetros de proyecto,
+     revisando el resultado en la vista previa.
+  4. Elige formato y carpeta de destino, y exporta.
+
+  La configuración completa se puede guardar como perfil para reutilizarla en otros proyectos.

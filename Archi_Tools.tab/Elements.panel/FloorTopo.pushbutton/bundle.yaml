@@ -1,0 +1,12 @@
+title: "Floor ⇄ Topo"
+author: "Archiplan-ER"
+tooltip: |
+  Convierte floors en toposolids y toposolids en floors, en uno o varios elementos a la vez.
+
+  Instrucciones:
+  1. Selecciona floors y/o toposolids (o ejecuta el comando y selecciónalos en la vista; pulsa Finish).
+  2. Elige el tipo de toposolid para los floors y el tipo de floor para los toposolids.
+  3. Indica si se eliminan los elementos originales y haz clic en Convertir.
+
+  Cada elemento se reemplaza por el otro tipo, conservando contorno, huecos, nivel, offset, forma de la superficie, Mark, Comments y fases.
+min_version: 2024

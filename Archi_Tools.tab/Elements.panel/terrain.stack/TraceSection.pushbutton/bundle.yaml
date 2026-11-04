@@ -1,0 +1,11 @@
+title: "Trace\nSection"
+author: "Archiplan-ER"
+tooltip: |
+  Calca la silueta de un Toposolid o Floor en el plano donde lo corta la vista activa.
+
+  Instrucciones:
+  1. Abre la vista de sección o elevación donde quieres el calco.
+  2. Ejecuta la herramienta.
+  3. Selecciona el Suelo o Toposólido cortado por la vista.
+
+  Las aristas de corte se dibujan como líneas de detalle nativas y quedan agrupadas.

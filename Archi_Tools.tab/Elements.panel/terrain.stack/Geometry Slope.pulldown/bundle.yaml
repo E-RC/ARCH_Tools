@@ -1,0 +1,7 @@
+title: "Geometry Slope"
+author: "Archiplan-ER"
+tooltip: "Pendientes en Floors y Toposolids desde una arista o desde varias, y unión de losas inclinadas."
+layout:
+  - Geometry Slope
+  - Geometry Slope Multi
+  - Unir Losas

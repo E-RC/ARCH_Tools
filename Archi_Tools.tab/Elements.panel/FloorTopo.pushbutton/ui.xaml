@@ -1,0 +1,135 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Floor ⇄ Toposolid" SizeToContent="Height" Width="360"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F5F4" Foreground="#333333"
+        FontFamily="Lato, Segoe UI"
+        ResizeMode="NoResize">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="30" CornerRadius="0" GlassFrameThickness="0" UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#B26E63"/>
+            <Setter Property="Foreground" Value="#FFFFF9"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="7">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#9A5E54"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#874F47"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Background" Value="#FFFFF9"/>
+            <Setter Property="BorderBrush" Value="#C7C5CD"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Padding" Value="6,4"/>
+            <Setter Property="FontFamily" Value="Lato"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Margin" Value="0,4,0,0"/>
+        </Style>
+
+        <Style x:Key="Label" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="FontFamily" Value="Lato"/>
+            <Setter Property="FontSize" Value="11"/>
+        </Style>
+
+        <Style x:Key="Count" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#A1A1A0"/>
+            <Setter Property="FontFamily" Value="Lato"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Barra de título -->
+        <Border Grid.Row="0" Background="#F5F5F4" BorderBrush="#C7C5CD" BorderThickness="0,0,0,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Floor ⇄ Toposolid" Foreground="#333333" FontFamily="Lato" FontWeight="Light" VerticalAlignment="Center" Margin="12,0,0,0" IsHitTestVisible="False"/>
+                <Button Grid.Column="1" Content="✕" Width="30" Height="30" Background="Transparent" Foreground="#A1A1A0" BorderThickness="0" FontSize="14" WindowChrome.IsHitTestVisibleInChrome="True" Click="CloseButton_Click" Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Foreground" Value="#333333"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- Contenido -->
+        <StackPanel Grid.Row="1" Margin="20,15,20,20">
+            <StackPanel Margin="0,0,0,15" HorizontalAlignment="Center">
+                <TextBlock Text="Floor ⇄ Toposolid" FontSize="22" FontWeight="Light" Foreground="#333333" FontFamily="Lato" HorizontalAlignment="Center"/>
+                <Border Height="2" Width="40" Background="#B26E63" Margin="0,4,0,0" HorizontalAlignment="Center"/>
+            </StackPanel>
+
+            <Grid Margin="0,5,0,0">
+                <TextBlock Style="{StaticResource Label}">
+                    <Run Text="1. " Foreground="#B26E63" FontWeight="Bold"/>
+                    <Run Text="Tipo de toposolid"/>
+                </TextBlock>
+                <TextBlock Name="TbFloorCount" Style="{StaticResource Count}"/>
+            </Grid>
+            <ComboBox Name="CbTopoType"/>
+
+            <Grid Margin="0,15,0,0">
+                <TextBlock Style="{StaticResource Label}">
+                    <Run Text="2. " Foreground="#B26E63" FontWeight="Bold"/>
+                    <Run Text="Tipo de floor"/>
+                </TextBlock>
+                <TextBlock Name="TbTopoCount" Style="{StaticResource Count}"/>
+            </Grid>
+            <ComboBox Name="CbFloorType"/>
+
+            <Border Height="1" Background="#C7C5CD" Margin="0,18,0,12"/>
+
+            <CheckBox Name="ChkDelete" Content="Eliminar elementos originales" Foreground="#333333" FontFamily="Lato" FontSize="11" VerticalContentAlignment="Center"/>
+            <TextBlock Text="Se conservan nivel, offset, forma de la superficie, Mark, Comments y fases." Foreground="#A1A1A0" FontFamily="Lato" FontSize="10" TextWrapping="Wrap" Margin="0,8,0,0"/>
+
+            <Button Content="Convertir" Style="{StaticResource PrimaryButton}" Height="40" Margin="0,18,0,0" Click="BtnExecute_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

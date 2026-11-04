@@ -1,0 +1,10 @@
+title: "Center A/R TAG"
+author: "Archiplan-ER"
+tooltip: |
+  Centra automáticamente las etiquetas de habitación y área seleccionadas.
+  
+  Instrucciones:
+  1. Seleccione en la vista los Room Tags o Area Tags que desea centrar.
+  2. Haga clic en el botón de la aplicación.
+  
+  El plugin buscará el elemento origen y alineará la etiqueta con su centro geométrico.

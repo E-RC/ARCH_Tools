@@ -1,0 +1,18 @@
+title: "Topo Level"
+author: "Archiplan-ER"
+tooltip: |
+  Empata niveles de perímetro entre Toposolids y Floors usando sub-elementos.
+
+  Instrucciones:
+  1. Selecciona el elemento a modificar (Floor o Toposolid).
+  2. Ejecuta Topo Level.
+  3. Define el nivel de precisión (0-10).
+  4. Selecciona el elemento de referencia.
+
+  Los puntos del elemento destino se elevarán para calcar la superficie de referencia.
+
+  Niveles de Precisión:
+  - Nivel 0: Modifica únicamente los puntos de control ya existentes en el elemento (tanto internos como perimetrales), sin crear ninguno nuevo.
+  - Nivel 1: Calce rápido, solo vértices perimetrales. Ideal para terrenos planos.
+  - Nivel 5: Calce equilibrado, puntos cada 1m. Recomendado para uso general.
+  - Nivel 10: Calce detallado, puntos cada 10cm. Alta complejidad geométrica.

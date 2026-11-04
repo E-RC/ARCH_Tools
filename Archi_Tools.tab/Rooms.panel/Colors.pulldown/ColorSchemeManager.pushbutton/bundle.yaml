@@ -1,0 +1,31 @@
+title: "Color Scheme\nManager"
+author: "Archiplan-ER"
+tooltip: |
+  Gestiona un Color Fill Scheme de Rooms o Areas: elimina valores fantasma y
+  decide cuales se ven, todo desde una sola ventana.
+
+  Instrucciones:
+  1. Arriba elige la categoria (Rooms / Areas), el Area Scheme si corresponde,
+     y el Color Scheme. Cambiar cualquiera recarga la lista.
+  2. La lista muestra TODAS las entradas del scheme, con su color. La casilla
+     de cada fila es su visibilidad: marcada = visible.
+  3. "Limpiar valores fantasma..." busca las entradas que ya no usa ningun
+     Room/Area, las etiqueta en la lista, y ofrece eliminarlas en bloque:
+     equivale al signo "-" rojo del dialogo nativo, pero de una sola pasada.
+     Pide confirmacion y lista antes que se va a borrar. La busqueda tiene
+     barra de progreso y se puede cancelar: en un scheme sobre un parametro
+     continuo (una superficie) puede haber miles de entradas y tardar.
+  4. "Aplicar visibilidad" escribe los cambios de las casillas. Mientras no lo
+     pulse, nada se modifica en el modelo: las filas tocadas quedan marcadas
+     como "modificado".
+
+  Preseleccionar visibles por parametro:
+  Elija un parametro (ej. Level, Department, Comments) y marque cuales de sus
+  valores deben quedar visibles. Eso MUEVE las casillas de la lista principal
+  sin escribir nada, para que pueda revisar el resultado antes de aplicarlo.
+  Si un mismo color aparece en grupos con instrucciones opuestas (el mismo
+  valor en dos niveles, filtrando por Level), la entrada queda VISIBLE y
+  marcada como "conflicto", para corregirla a mano si hace falta.
+
+  Nota: el alcance es siempre todo el proyecto, no la vista activa. Para
+  pintar los colores de un scheme use "Assign Colors".

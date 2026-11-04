@@ -1,0 +1,558 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="PRO-Batch Export" Width="1200" Height="750" MinWidth="1050" MinHeight="650"
+        WindowStartupLocation="CenterScreen" 
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        ResizeMode="CanResize" Closing="Window_Closing"
+        TextElement.Foreground="#333333"
+        FontFamily="Lato, Helvetica Neue, Calibri Light, sans-serif">
+    
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="8" GlassFrameThickness="0" CornerRadius="6"/>
+    </WindowChrome.WindowChrome>
+    
+    <Window.Resources>
+        <!-- Color Palette -->
+        <SolidColorBrush x:Key="Surface" Color="#F5F5F4"/>
+        <SolidColorBrush x:Key="SurfaceContainerLow" Color="#FFFFF9"/>
+        <SolidColorBrush x:Key="SurfaceContainer" Color="#FFFFF9"/>
+        <SolidColorBrush x:Key="SurfaceContainerHigh" Color="#FFFFF9"/>
+        <SolidColorBrush x:Key="SurfaceContainerHighest" Color="#F5F5F4"/>
+        <SolidColorBrush x:Key="OnSurface" Color="#333333"/>
+        <SolidColorBrush x:Key="OnSurfaceVariant" Color="#A1A1A0"/>
+        <SolidColorBrush x:Key="PrimaryContainer" Color="#B26E63"/>
+        <SolidColorBrush x:Key="PrimaryContainerHover" Color="#9A5E54"/>
+        <SolidColorBrush x:Key="Outline" Color="#C7C5CD"/>
+        <SolidColorBrush x:Key="AccentTeal" Color="#B26E63"/>
+        
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource OnSurface}"/>
+        </Style>
+        
+        <Style x:Key="LabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource PrimaryContainer}"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="TextDecorations" Value="Underline"/>
+        </Style>
+        
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#FFFFF9"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Outline}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="6,4"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource PrimaryContainer}"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style TargetType="ComboBox">
+            <Setter Property="Background" Value="#FFFFF9"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Outline}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="6,4"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Background" Value="#FFFFF9"/>
+            <Setter Property="Padding" Value="4,2"/>
+        </Style>
+        
+        <Style TargetType="ListBox">
+            <Setter Property="Background" Value="{StaticResource SurfaceContainer}"/>
+            <Setter Property="Foreground" Value="{StaticResource OnSurface}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Outline}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+        
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Padding" Value="8,4"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SurfaceContainerHigh}"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SurfaceContainerHighest}"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryContainer}"/>
+            <Setter Property="Foreground" Value="#FFFFF9"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource PrimaryContainerHover}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#8E574E"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#FFFFF9"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Outline}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F5F5F4"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Border Background="{StaticResource Surface}" CornerRadius="6" BorderBrush="{StaticResource Outline}" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="45"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Header Bar -->
+            <Border Grid.Row="0" Background="{StaticResource Surface}" MouseLeftButtonDown="Header_MouseDown" CornerRadius="5,5,0,0">
+                <Grid Margin="15,0">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                        <TextBlock Text="📁" Foreground="{StaticResource PrimaryContainer}" Margin="0,0,10,0" FontSize="16" VerticalAlignment="Center"/>
+                        <TextBlock Text="ARCHIPLAN PRO-BATCH EXPORT" FontWeight="Light" FontSize="13" Foreground="{StaticResource OnSurface}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Button x:Name="minimize_btn" Content="—" Width="30" Height="28" Background="Transparent" Foreground="{StaticResource OnSurfaceVariant}" BorderThickness="0" Cursor="Hand" Click="minimize_btn_Click"/>
+                        <Button x:Name="close_window_btn" Content="✕" Width="30" Height="28" Background="Transparent" Foreground="{StaticResource OnSurfaceVariant}" BorderThickness="0" Cursor="Hand" Click="close_btn_Click"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <Rectangle Grid.Row="0" Height="1" Fill="{StaticResource Outline}" VerticalAlignment="Bottom"/>
+
+            <!-- Main Work Area -->
+            <Grid Grid.Row="1" Margin="15">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="390"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Left Column 0: Sheets List -->
+                <Grid Grid.Column="0" Margin="0,0,10,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!-- ViewSheetSet Selector -->
+                    <StackPanel Grid.Row="0" Margin="0,0,0,10" HorizontalAlignment="Stretch">
+                        <TextBlock Text="Saved Print Sets:" Style="{StaticResource LabelStyle}" Margin="0,0,0,4"/>
+                        <ComboBox x:Name="sheet_sets_cb" Height="28" DisplayMemberPath="Name" SelectionChanged="sheet_sets_cb_SelectionChanged" HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+                    
+                    <!-- Search and Select Quick Actions -->
+                    <Grid Grid.Row="1" Margin="0,0,0,10" HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBox x:Name="search_txt" Grid.Column="0" Height="32" HorizontalAlignment="Stretch"
+                                 Tag="Search sheets by number, name or phase..." 
+                                 TextChanged="search_txt_TextChanged"
+                                 BorderThickness="1" BorderBrush="{StaticResource Outline}"/>
+                        
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="10,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="Select:" VerticalAlignment="Center" Foreground="{StaticResource OnSurfaceVariant}" FontSize="11" Margin="0,0,8,0"/>
+                            <Button x:Name="select_all_btn" Content="All" Height="26" Width="60" Style="{StaticResource SecondaryButton}" FontSize="10" Click="select_all_btn_Click" Margin="0,0,5,0"/>
+                            <Button x:Name="select_none_btn" Content="None" Height="26" Width="60" Style="{StaticResource SecondaryButton}" FontSize="10" Click="select_none_btn_Click"/>
+                        </StackPanel>
+                    </Grid>
+                    
+                    <CheckBox x:Name="hide_unselected_chk" Grid.Row="2" Content="Hide unselected" Margin="5,0,5,5" Foreground="{StaticResource OnSurfaceVariant}" FontSize="11" Checked="filter_event_triggered" Unchecked="filter_event_triggered"/>
+
+                    <!-- Sheets DataGrid -->
+                    <Border Grid.Row="3" CornerRadius="4" BorderBrush="{StaticResource Outline}" BorderThickness="1" Background="{StaticResource SurfaceContainerLow}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                        <DataGrid x:Name="sheets_datagrid" AutoGenerateColumns="False" CanUserAddRows="False"
+                                  Background="Transparent" BorderThickness="0" HeadersVisibility="Column"
+                                  GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="{StaticResource Outline}"
+                                  RowBackground="Transparent" AlternatingRowBackground="{StaticResource SurfaceContainer}"
+                                  SelectionMode="Single" CanUserResizeRows="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="#F5F5F4"/>
+                                    <Setter Property="Foreground" Value="#A1A1A0"/>
+                                    <Setter Property="Padding" Value="12,8"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                    <Setter Property="BorderBrush" Value="{StaticResource Outline}"/>
+                                </Style>
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="Foreground" Value="{StaticResource OnSurface}"/>
+                                    <Setter Property="Padding" Value="12,8"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="DataGridCell">
+                                                <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+                                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#14B26E63"/>
+                                            <Setter Property="Foreground" Value="#333333"/>
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#F5F5F4"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.Resources>
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Width="40" Header="Sel">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+                                                      HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="Number" Binding="{Binding SheetNumber}" Width="0.15*" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Sheet Name" Binding="{Binding SheetName}" Width="0.3*" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Rev." Binding="{Binding CurrentRevision}" Width="0.1*" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Custom File Name" Binding="{Binding CustomFileName}" Width="0.45*" IsReadOnly="True"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+                </Grid>
+                <!-- Middle Column 1: Naming Rule Builder Card (NOW IN POPUP) -->
+                <Popup x:Name="NamingPopup" AllowsTransparency="True" Placement="Center" StaysOpen="False" PopupAnimation="Fade" Width="680" Height="600">
+                    <Border Background="{StaticResource SurfaceContainerLow}" CornerRadius="4" BorderBrush="{StaticResource Outline}" BorderThickness="1" Padding="12" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            
+                            <TextBlock Grid.Row="0" Text="NAMING RULE BUILDER" Style="{StaticResource LabelStyle}" Margin="0,0,0,8"/>
+                            
+                            <!-- Parameters TabControl -->
+                            <TabControl x:Name="param_tabs" Grid.Row="1" Margin="0,0,0,8" Background="Transparent" BorderBrush="{StaticResource Outline}" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                <TabControl.Resources>
+                                    <Style TargetType="TabItem">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="TabItem">
+                                                    <Border Name="Border" Background="Transparent" BorderBrush="Transparent" BorderThickness="0,0,0,2" Margin="0,0,2,0">
+                                                        <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center" HorizontalAlignment="Center" ContentSource="Header" Margin="8,4"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsSelected" Value="True">
+                                                            <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PrimaryContainer}" />
+                                                            <Setter Property="Foreground" Value="{StaticResource OnSurface}" />
+                                                        </Trigger>
+                                                        <Trigger Property="IsSelected" Value="False">
+                                                            <Setter Property="Foreground" Value="{StaticResource OnSurfaceVariant}" />
+                                                        </Trigger>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="Border" Property="Background" Value="{StaticResource Surface}" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </TabControl.Resources>
+                                <TabItem Header="Sheet Fields">
+                                    <ListBox x:Name="sheet_params_lb" BorderThickness="0" Background="{StaticResource SurfaceContainerLow}" DisplayMemberPath="display_name" MouseDoubleClick="param_lb_MouseDoubleClick" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                                </TabItem>
+                                <TabItem Header="View Fields">
+                                    <ListBox x:Name="view_params_lb" BorderThickness="0" Background="{StaticResource SurfaceContainerLow}" DisplayMemberPath="display_name" MouseDoubleClick="param_lb_MouseDoubleClick" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                                </TabItem>
+                                <TabItem Header="Project Parameters">
+                                    <ListBox x:Name="proj_params_lb" BorderThickness="0" Background="{StaticResource SurfaceContainerLow}" DisplayMemberPath="display_name" MouseDoubleClick="param_lb_MouseDoubleClick" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                                </TabItem>
+                            </TabControl>
+                            
+                            <!-- Actions Panel: Separator and Add Button -->
+                            <Grid Grid.Row="2" Margin="0,0,0,8" HorizontalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <TextBlock Grid.Column="0" Text="Character Separator:" VerticalAlignment="Center" Foreground="{StaticResource OnSurfaceVariant}" FontSize="11" Margin="0,0,8,0"/>
+                                <ComboBox x:Name="separator_cb" Grid.Column="1" Height="28" HorizontalAlignment="Stretch">
+                                    <!-- List of separators -->
+                                    <ComboBoxItem Content="_"/>
+                                    <ComboBoxItem Content="-"/>
+                                    <ComboBoxItem Content=" "/>
+                                    <ComboBoxItem Content="[None]"/>
+                                </ComboBox>
+                                
+                                <Button x:Name="add_param_btn" Grid.Column="2" Content="+ Add Parameter" Height="28" Style="{StaticResource SecondaryButton}" FontSize="11" FontWeight="SemiBold" Click="add_param_btn_Click" Margin="10,0,0,0" Padding="10,0"/>
+                            </Grid>
+                            
+                            <!-- Pattern Output TextBox -->
+                            <Grid Grid.Row="3" Margin="0,0,0,8" HorizontalAlignment="Stretch">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Text="FILE NAMING PATTERN" FontSize="9" FontWeight="Bold" Foreground="{StaticResource OnSurfaceVariant}" Margin="0,0,0,3"/>
+                                <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="naming_pattern_txt" Grid.Column="0" Height="28" HorizontalAlignment="Stretch" TextChanged="naming_pattern_txt_TextChanged"/>
+                                    <Button x:Name="clear_pattern_btn" Grid.Column="1" Content="Clear" Height="28" Style="{StaticResource SecondaryButton}" Margin="5,0,0,0" FontSize="11" Padding="15,0" Click="clear_pattern_btn_Click"/>
+                                </Grid>
+                            </Grid>
+                            
+                            <!-- Live Preview Card -->
+                            <Border Grid.Row="4" Background="{StaticResource SurfaceContainer}" CornerRadius="4" Padding="10" BorderBrush="{StaticResource Outline}" BorderThickness="1" HorizontalAlignment="Stretch">
+                                <StackPanel HorizontalAlignment="Stretch">
+                                    <Grid Margin="0,0,0,4" HorizontalAlignment="Stretch">
+                                        <TextBlock Text="FILE NAME PREVIEW" FontSize="9" FontWeight="Bold" Foreground="{StaticResource OnSurfaceVariant}"/>
+                                        <TextBlock Text="Live Preview" HorizontalAlignment="Right" Foreground="{StaticResource AccentTeal}" FontSize="9" FontWeight="Bold"/>
+                                    </Grid>
+                                    <!-- Naming Live Preview Text Block -->
+                                    <TextBlock x:Name="naming_preview_txt" Text="Adjust pattern to see preview..." FontSize="11" FontFamily="JetBrains Mono, Cascadia Code, Consolas, monospace" Foreground="{StaticResource PrimaryContainer}" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </Popup>
+
+                <!-- Right Column 2: Export Settings -->
+                <Grid Grid.Column="1" Margin="10,0,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Profiles Section -->
+                    <Border Grid.Row="0" Background="{StaticResource SurfaceContainerLow}" CornerRadius="4" BorderBrush="{StaticResource Outline}" BorderThickness="1" Padding="12" Margin="0,0,0,10" HorizontalAlignment="Stretch">
+                        <StackPanel HorizontalAlignment="Stretch">
+                            <TextBlock Text="SAVED PROFILES" Style="{StaticResource LabelStyle}" Margin="0,0,0,8"/>
+                            <Grid HorizontalAlignment="Stretch" Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <ComboBox x:Name="profiles_cb" Grid.Column="0" Height="28" SelectionChanged="profiles_cb_SelectionChanged"/>
+                                <Button x:Name="save_profile_btn" Grid.Column="1" Content="Save" Height="28" Style="{StaticResource SecondaryButton}" Margin="5,0,0,0" Padding="10,0" Click="save_profile_btn_Click" ToolTip="Guardar Configuración Actual"/>
+                                <Button x:Name="delete_profile_btn" Grid.Column="2" Content="X" Height="28" Width="28" Style="{StaticResource SecondaryButton}" Margin="5,0,0,0" Click="delete_profile_btn_Click" ToolTip="Eliminar Perfil Seleccionado"/>
+                            </Grid>
+                            
+                            <Grid HorizontalAlignment="Stretch" Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button x:Name="import_xml_btn" Grid.Column="0" Content="Import" Height="28" Style="{StaticResource SecondaryButton}" Margin="0,0,2.5,0" Click="import_xml_btn_Click" ToolTip="Cargar configuración desde archivo XML"/>
+                                <Button x:Name="export_xml_btn" Grid.Column="1" Content="Export" Height="28" Style="{StaticResource SecondaryButton}" Margin="2.5,0,0,0" Click="export_xml_btn_Click" ToolTip="Guardar configuración en archivo XML"/>
+                            </Grid>
+                            
+                            <Button x:Name="open_naming_btn" Content="⚙ Naming Rule Builder..." Height="32" Style="{StaticResource SecondaryButton}" FontWeight="SemiBold" Click="open_naming_btn_Click" HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Format Settings Card -->
+                    <Border Grid.Row="1" Background="{StaticResource SurfaceContainerLow}" CornerRadius="4" BorderBrush="{StaticResource Outline}" BorderThickness="1" Padding="12" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            
+                            <TextBlock Grid.Row="0" Text="EXPORT SETTINGS" Style="{StaticResource LabelStyle}" Margin="0,0,0,10"/>
+                            
+                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                <StackPanel HorizontalAlignment="Stretch" Margin="0,0,10,0">
+                                    
+                                    <CheckBox x:Name="create_subfolders_chk" Content="Create PDF/DWG subfolders automatically" Foreground="{StaticResource OnSurface}" FontWeight="SemiBold" Margin="0,0,0,15" IsChecked="True"/>
+                                    
+                                    <!-- PDF MAIN ENABLE -->
+                                    <CheckBox x:Name="export_pdf_chk" Content="Export to PDF" FontWeight="Bold" Foreground="{StaticResource OnSurface}" VerticalAlignment="Center" Margin="0,0,0,10" Checked="Format_CheckedChange" Unchecked="Format_CheckedChange"/>
+                                    
+                                    <!-- NATIVE PDF SETTINGS PANEL -->
+                                    <StackPanel IsEnabled="{Binding ElementName=export_pdf_chk, Path=IsChecked}" Margin="0,0,0,15">
+                                        
+                                        <GroupBox Header="PDF Export Settings" Foreground="{StaticResource OnSurfaceVariant}" BorderBrush="{StaticResource Outline}" Margin="0,0,0,8" Padding="10,10,10,5">
+                                            <StackPanel>
+                                                <RadioButton x:Name="pdf_combine_true" Content="Combine selected sheets into a single PDF file" Foreground="{StaticResource OnSurface}" Margin="0,0,0,5"/>
+                                                <RadioButton x:Name="pdf_combine_false" Content="Create separate single-page PDF files" Foreground="{StaticResource OnSurface}" IsChecked="True"/>
+                                            </StackPanel>
+                                        </GroupBox>
+                                        
+                                        <GroupBox Header="Page Setup Options" Foreground="{StaticResource OnSurfaceVariant}" BorderBrush="{StaticResource Outline}" Margin="0,0,0,8" Padding="10">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                
+                                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Paper Size:" Foreground="{StaticResource OnSurfaceVariant}" FontSize="11" VerticalAlignment="Center" Margin="0,0,10,8"/>
+                                                <ComboBox x:Name="pdf_size_cb" Grid.Row="0" Grid.Column="1" Height="24" Margin="0,0,0,8" HorizontalAlignment="Stretch" Background="White" Foreground="#222222"/>
+                                                
+                                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Orientation:" Foreground="{StaticResource OnSurfaceVariant}" FontSize="11" VerticalAlignment="Center" Margin="0,0,10,8"/>
+                                                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="0,0,0,8">
+                                                    <RadioButton x:Name="pdf_orient_portrait" Content="Portrait" Foreground="{StaticResource OnSurface}" Margin="0,0,15,0"/>
+                                                    <RadioButton x:Name="pdf_orient_landscape" Content="Landscape" Foreground="{StaticResource OnSurface}" IsChecked="True"/>
+                                                </StackPanel>
+                                                
+                                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Paper Placement:" Foreground="{StaticResource OnSurfaceVariant}" FontSize="11" VerticalAlignment="Center" Margin="0,0,10,8"/>
+                                                <ComboBox x:Name="pdf_placement_cb" Grid.Row="2" Grid.Column="1" Height="24" Margin="0,0,0,8" HorizontalAlignment="Left" Width="150" Background="White" Foreground="#222222">
+                                                    <ComboBoxItem Content="Center" IsSelected="True"/>
+                                                    <ComboBoxItem Content="Offset from corner"/>
+                                                </ComboBox>
+                                                
+                                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Zoom:" Foreground="{StaticResource OnSurfaceVariant}" FontSize="11" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <RadioButton x:Name="pdf_zoom_fit" Content="Fit to page" Foreground="{StaticResource OnSurface}" IsChecked="True" Margin="0,0,15,0" Checked="pdf_zoom_Checked"/>
+                                                    <RadioButton x:Name="pdf_zoom_custom" Content="Zoom:" Foreground="{StaticResource OnSurface}" Margin="0,0,5,0" Checked="pdf_zoom_Checked"/>
+                                                    <TextBox x:Name="pdf_zoom_val_txt" Width="40" Height="24" Text="100" IsEnabled="{Binding ElementName=pdf_zoom_custom, Path=IsChecked}"/>
+                                                    <TextBlock Text="%" Foreground="{StaticResource OnSurfaceVariant}" FontSize="11" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </GroupBox>
+                                        
+                                        <GroupBox Header="Appearance &amp; Output Quality" Foreground="{StaticResource OnSurfaceVariant}" BorderBrush="{StaticResource Outline}" Margin="0,0,0,8" Padding="10">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                
+                                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Raster Quality:" Foreground="{StaticResource OnSurfaceVariant}" FontSize="11" VerticalAlignment="Center" Margin="0,0,10,8"/>
+                                                <ComboBox x:Name="pdf_quality_cb" Grid.Row="0" Grid.Column="1" Height="24" Margin="0,0,0,8" HorizontalAlignment="Stretch" Background="White" Foreground="#222222">
+                                                    <ComboBoxItem Content="Low"/>
+                                                    <ComboBoxItem Content="Medium"/>
+                                                    <ComboBoxItem Content="High" IsSelected="True"/>
+                                                    <ComboBoxItem Content="Presentation"/>
+                                                </ComboBox>
+                                                
+                                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Colors:" Foreground="{StaticResource OnSurfaceVariant}" FontSize="11" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                <ComboBox x:Name="pdf_color_depth_cb" Grid.Row="1" Grid.Column="1" Height="24" HorizontalAlignment="Stretch" Background="White" Foreground="#222222">
+                                                    <ComboBoxItem Content="Color" IsSelected="True"/>
+                                                    <ComboBoxItem Content="Grayscale"/>
+                                                    <ComboBoxItem Content="Black Lines"/>
+                                                </ComboBox>
+                                            </Grid>
+                                        </GroupBox>
+                                        
+                                        <GroupBox Header="BIM Visibility Options" Foreground="{StaticResource OnSurfaceVariant}" BorderBrush="{StaticResource Outline}" Padding="10,10,10,5">
+                                            <StackPanel>
+                                                <CheckBox x:Name="pdf_blue_links_chk" Content="View links in blue" Foreground="{StaticResource OnSurface}" Margin="0,0,0,5"/>
+                                                <CheckBox x:Name="pdf_hide_unref_chk" Content="Hide unreferenced view tags" Foreground="{StaticResource OnSurface}" Margin="0,0,0,5" IsChecked="True"/>
+                                                <CheckBox x:Name="pdf_mask_lines_chk" Content="Regions mask coincident lines" Foreground="{StaticResource OnSurface}" Margin="0,0,0,5"/>
+                                                <CheckBox x:Name="pdf_hide_scope_chk" Content="Hide scope boxes" Foreground="{StaticResource OnSurface}" Margin="0,0,0,5" IsChecked="True"/>
+                                                <CheckBox x:Name="pdf_hide_crop_chk" Content="Hide crop boundaries" Foreground="{StaticResource OnSurface}" Margin="0,0,0,5" IsChecked="True"/>
+                                                <CheckBox x:Name="pdf_hide_ref_chk" Content="Hide reference planes" Foreground="{StaticResource OnSurface}" Margin="0,0,0,5" IsChecked="True"/>
+                                            </StackPanel>
+                                        </GroupBox>
+                                    </StackPanel>
+                                    
+                                    <!-- DWG SECTION -->
+                                    <Border Background="{StaticResource SurfaceContainer}" CornerRadius="4" Padding="10" BorderBrush="{StaticResource Outline}" BorderThickness="1" HorizontalAlignment="Stretch">
+                                        <Grid HorizontalAlignment="Stretch">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            
+                                            <CheckBox x:Name="export_dwg_chk" Grid.Row="0" Content="Export to DWG (AutoCAD)" FontWeight="Bold" Foreground="{StaticResource OnSurface}" Checked="Format_CheckedChange" Unchecked="Format_CheckedChange"/>
+                                            <ComboBox x:Name="dwg_settings_cb" Grid.Row="1" Height="28" Margin="0,8,0,0" HorizontalAlignment="Stretch" DisplayMemberPath="Name" IsEnabled="{Binding ElementName=export_dwg_chk, Path=IsChecked}" Background="White" Foreground="#222222"/>
+                                        </Grid>
+                                    </Border>
+                                    
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+
+            <!-- Bottom Actions Bar -->
+            <Border Grid.Row="2" Background="{StaticResource SurfaceContainerLow}" CornerRadius="0,0,5,5">
+                <Grid Margin="15,10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <!-- Destination path selector -->
+                        <Grid Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,20,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Text="DESTINATION FOLDER" Style="{StaticResource LabelStyle}" Margin="0,0,0,4"/>
+                            <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="folder_path_txt" Grid.Column="0" Height="28" IsReadOnly="True" BorderBrush="{StaticResource Outline}" HorizontalAlignment="Stretch"/>
+                                <Button x:Name="browse_btn" Grid.Column="1" Content="Browse..." Style="{StaticResource SecondaryButton}" Height="28" Padding="15,0" Margin="8,0,0,0" Click="browse_btn_Click"/>
+                            </Grid>
+                        </Grid>
+                        
+                        <!-- Main Action Buttons -->
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom">
+                            <Button x:Name="close_btn" Content="CLOSE" Width="100" Height="36" Style="{StaticResource SecondaryButton}" Margin="0,0,10,0" FontWeight="Bold" Click="close_btn_Click"/>
+                            <Button x:Name="export_btn" Content="EXPORT" Width="130" Height="36" Style="{StaticResource PrimaryButton}" FontWeight="Bold" Click="export_btn_Click"/>
+                        </StackPanel>
+                    </Grid>
+                    
+                    <!-- Embedded Progress Bar -->
+                    <Grid x:Name="progress_panel" Grid.Row="1" Visibility="Collapsed" Margin="0,15,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <ProgressBar x:Name="export_pb" Grid.Column="0" Height="6" BorderThickness="0" Background="{StaticResource Surface}" Foreground="{StaticResource PrimaryContainer}" Minimum="0" Maximum="100" Margin="0,0,15,0" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="export_status_txt" Grid.Column="1" Text="Exporting 0/0..." Foreground="{StaticResource OnSurfaceVariant}" FontSize="11" VerticalAlignment="Center" Width="250" TextAlignment="Right"/>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

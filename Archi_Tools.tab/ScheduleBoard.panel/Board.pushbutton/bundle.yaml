@@ -1,0 +1,15 @@
+title: "Schedule\nBoard"
+tooltip: |
+  Every schedule in the project, side by side on one canvas, each with its real
+  table. Open it when the question spans more than one schedule: comparing
+  them, finding the empty or out-of-date ones, giving the same field to
+  several at once, or fixing a value across many rows without opening each
+  view.
+
+  Instructions:
+  1. Click: opens the board in its own window.
+  2. Shift+click: opens it as a dockable pane inside Revit instead.
+
+  Result: the board opens empty and remembers which schedules you bring into
+  it, across tabbed boards you name yourself.
+author: "Archiplan-ER"

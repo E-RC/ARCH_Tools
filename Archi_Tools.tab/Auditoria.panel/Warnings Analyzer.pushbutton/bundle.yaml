@@ -1,0 +1,14 @@
+title: "Warnings Analyzer"
+author: "Archiplan-ER"
+tooltip: |
+  Dashboard interactivo para entender y resolver los warnings del modelo.
+
+  Instrucciones:
+  1. Abre el modelo y ejecuta la herramienta (se abre una ventana aparte, puedes seguir trabajando en Revit).
+  2. Revisa los indicadores y gráficos; haz clic en un tipo, prioridad o categoría para filtrar.
+  3. Elige un tipo de warning para ver por qué importa y cómo resolverlo.
+  4. Marca warnings en la tabla y usa Seleccionar, Mostrar, Aislar, Ocultar o Caja 3D sobre esos elementos.
+  5. Para duplicados y líneas superpuestas usa la corrección automática (se deshace con Ctrl+Z).
+  6. Pulsa Actualizar (F5) tras corregir; marca como Aceptado lo que sea intencional.
+
+  Guarda una medición diaria por modelo para ver la tendencia, colorea la vista por prioridad y exporta a CSV.

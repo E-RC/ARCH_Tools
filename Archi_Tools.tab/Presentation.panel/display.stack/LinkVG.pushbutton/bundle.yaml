@@ -1,0 +1,24 @@
+title: "Link VG"
+author: "Archiplan-ER"
+tooltip: |
+  Edita en simultaneo los Display Settings de varios Revit Links en la VISTA ACTIVA.
+
+  Instrucciones:
+  1. Ejecute el comando en la vista a modificar.
+  2. Marque los Revit Links a ajustar.
+  3. Configure los ajustes (solo se aplican los que cambie de "No cambiar"):
+     - Visibilidad del link (visible / oculto)
+     - Halftone
+     - Modo de Display Settings (By Host View / By Linked View / Custom)
+     - Vista vinculada (para By Linked View)
+     - Copiar la configuracion completa desde otro link de la vista
+  4. Aplicar: los ajustes se aplican a todos los links marcados a la vez.
+
+  PRESETS: guarde la configuracion de links de la vista actual como preset con
+  nombre (se almacena en una vista-banco "_LINKVG_PRESET_<nombre>" dentro del
+  modelo, persiste entre sesiones) y aplique cualquier preset a los links
+  marcados. Configure una vez en el dialogo de Revit; reutilice para siempre.
+
+  Nota: las opciones internas del modo Custom (fases, categorias, detail level...)
+  no son editables por la API de Revit (en ninguna version); los presets y
+  "Copiar configuracion desde" son la via para replicarlas.

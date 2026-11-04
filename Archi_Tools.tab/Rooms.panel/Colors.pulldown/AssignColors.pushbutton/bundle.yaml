@@ -1,0 +1,43 @@
+title: "Assign\nColors"
+author: "Archiplan-ER"
+tooltip: |
+  Asigna colores a un Color Fill Scheme de Rooms o Areas sin abrir el editor
+  de Revit y cambiarlos uno por uno.
+
+  Todo ocurre en una sola ventana.
+
+  Instrucciones:
+  1. Arriba elige la categoria (Rooms / Areas), el Area Scheme si
+     corresponde, y el Color Scheme. Si la vista activa ya tiene uno
+     aplicado, aparece precargado. Cambiar cualquiera recarga la lista.
+  2. La casilla "Aplicar a la vista activa" muestra si la vista esta usando
+     ese scheme; marcarla lo aplica, desmarcarla lo quita.
+  3. El selector de alcance elige que se lista:
+     - "Visibles en la vista": solo los valores que usan los Rooms/Areas
+       visibles ahi (respeta view range, crop box, filtros y fase).
+     - "Todo el scheme": todas las entradas; un contador en 0 delata los
+       valores fantasma que ya no usa nadie.
+
+  Para pintar:
+  - Clic en una fila sin marcar: pinta solo ese valor.
+  - Marque varias casillas y haga clic en cualquiera de ellas (o use el boton
+    "Asignar color a N marcados..."): pinta todas de un mismo color.
+  - Clic en el chip de trama de una fila: cambia la trama de relleno, con la
+    misma regla de seleccion que el color. Solo se listan patrones de tipo
+    Drafting, los unicos que Revit acepta en un Color Scheme; "(sin trama)"
+    deja la entrada sin relleno, por mas color que tenga.
+  - "Cargar paleta..." lee colores de un archivo SVG, texto/CSV (lista de
+    codigos #RRGGBB) o GIMP .gpl y los asigna en orden a toda la lista. El
+    pie indica cuantos colores necesita la paleta para calzar exacto.
+
+  El selector de color ofrece las tres vias en la misma ventana: escribir un
+  codigo hex, el selector estandar de Windows, o la paleta RAL Classic
+  integrada (216 colores, buscable por numero o nombre).
+
+  Nota: el orden de la paleta sigue el orden alfabetico de la lista completa
+  (no el filtro de busqueda).
+
+  Nota sobre RAL: los valores de la paleta RAL Classic integrada son
+  aproximaciones publicas (Wikipedia, CC BY-SA), no los valores oficiales
+  calibrados con licencia de Autodesk/RAL. Sirven para elegir un color de
+  referencia rapido, no para especificaciones de pintura o fabricacion.

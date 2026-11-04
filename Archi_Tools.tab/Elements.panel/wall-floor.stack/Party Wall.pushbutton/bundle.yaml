@@ -1,0 +1,12 @@
+title: "Party Wall"
+author: "Archiplan-ER"
+tooltip: |
+  Crea muros prefabricados escalonados (postes + paneles) que se adaptan al terreno.
+
+  Instrucciones:
+  1. Ejecuta la herramienta y selecciona las líneas del recorrido.
+  2. Selecciona el Host: el terreno o suelo sobre el que se apoya.
+  3. Define el tipo de poste y de panel, la distancia entre postes y la altura.
+  4. Elige la justificación (Inicio / Centro / Final) y genera.
+
+  El muro se construye escalonado siguiendo la pendiente del host, con altura de panel constante.

@@ -1,0 +1,12 @@
+title: "Relax"
+author: "Archiplan-ER"
+tooltip: |
+  Tomate un respiro con un juego rapido estilo Arkanoid.
+
+  Instrucciones:
+  1. Mueve la paleta con el mouse o las flechas.
+  2. ESPACIO lanza la bola / reinicia.
+  3. P pausa el juego, ESC cierra la ventana.
+
+  Rompe los bloques que forman el logo ARCHIPLAN,
+  atrapa los power-ups y supera tu record.

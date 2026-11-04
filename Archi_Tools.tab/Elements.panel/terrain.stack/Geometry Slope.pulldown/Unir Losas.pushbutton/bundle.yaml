@@ -1,0 +1,12 @@
+title: "Unir Losas"
+author: "Archiplan-ER"
+tooltip: |
+  Une dos losas con pendiente distinta en la arista donde se cruzan, sin cambiar sus pendientes.
+
+  Instrucciones:
+  1. Selecciona las dos losas (o ejecuta el comando y selecciónalas; pulsa Finalizar).
+  2. Elige si se encuentran en cumbrera o en valle.
+  3. Revisa el cambio de área de cada losa y confirma.
+
+  Cada losa conserva su pendiente y solo cambia su perímetro: ambas quedan sin superposición y se unen en la arista de cruce.
+min_version: 2024

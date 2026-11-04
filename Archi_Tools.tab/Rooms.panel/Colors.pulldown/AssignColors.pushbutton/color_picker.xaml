@@ -1,0 +1,136 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Elegir color" Height="620" Width="420"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F5F4" Foreground="#333333"
+        FontFamily="Lato Light" FontSize="12">
+
+    <!-- Reemplaza al antiguo ral_picker.xaml Y al modal "Origen del color":
+         hex, selector de Windows y paleta RAL conviven en una sola ventana,
+         asi elegir un color son dos clics y no tres ventanas. -->
+
+    <Window.Resources>
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#B26E63"/>
+            <Setter Property="Foreground" Value="#FFFFF9"/>
+            <Setter Property="FontFamily" Value="Lato"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="12,7"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="2">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4,0"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#9C5D53"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="Background" Value="#333333"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#4A4A4A"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#FFFFF9"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="FontFamily" Value="Lato"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#C7C5CD"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="2">
+                            <Grid>
+                                <TextBlock x:Name="watermark" Text="{TemplateBinding Tag}"
+                                           Foreground="#A1A1A0" FontStyle="Italic"
+                                           Margin="7,0,7,0" VerticalAlignment="Center"
+                                           IsHitTestVisible="False" Visibility="Collapsed"/>
+                                <ScrollViewer x:Name="PART_ContentHost" Margin="5,0,5,0"
+                                              VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Text" Value=""/>
+                                    <Condition Property="IsFocused" Value="False"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="watermark" Property="Visibility" Value="Visible"/>
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="ARCHIPLAN  ·  ELEGIR COLOR" FontFamily="Lato" FontSize="10"
+                   Foreground="#B26E63" Margin="0,0,0,6"/>
+
+        <TextBlock x:Name="title_txt" Grid.Row="1" Text="Color" FontFamily="Lato Light" FontSize="18"
+                   Foreground="#333333" Margin="0,0,0,10" TextWrapping="Wrap"/>
+
+        <Rectangle Grid.Row="2" Height="3" Fill="#B26E63" HorizontalAlignment="Left" Width="48" Margin="0,0,0,12"/>
+
+        <Grid Grid.Row="3" Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Border x:Name="preview_swatch" Grid.Column="0" Width="44" Height="28" CornerRadius="2"
+                    BorderBrush="#333333" BorderThickness="1" Margin="0,0,8,0"/>
+            <TextBox x:Name="hex_tb" Grid.Column="1" Tag="#RRGGBB" FontFamily="Consolas"/>
+            <Button x:Name="use_hex_btn" Grid.Column="2" Content="Usar" Margin="8,0,0,0"
+                    Style="{StaticResource PrimaryButton}"/>
+        </Grid>
+
+        <Button x:Name="windows_btn" Grid.Row="4" Content="Selector de color de Windows..."
+                HorizontalAlignment="Left" Margin="0,0,0,14"/>
+
+        <TextBox x:Name="search_tb" Grid.Row="5" Margin="0,0,0,8"
+                 Tag="Buscar en RAL Classic por numero o nombre..."/>
+
+        <Border Grid.Row="6" BorderBrush="#C7C5CD" BorderThickness="1" CornerRadius="2" Background="#FFFFF9">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel x:Name="rows_panel" Margin="8"/>
+            </ScrollViewer>
+        </Border>
+
+        <Grid Grid.Row="7" Margin="0,12,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="RAL Classic: referencia publica, no oficial" FontSize="10"
+                       Foreground="#A1A1A0" VerticalAlignment="Center"/>
+            <Button x:Name="cancel_btn" Grid.Column="1" Content="Cancelar"/>
+        </Grid>
+    </Grid>
+</Window>

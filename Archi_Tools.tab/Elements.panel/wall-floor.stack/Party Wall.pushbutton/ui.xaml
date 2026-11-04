@@ -1,0 +1,97 @@
+<Window
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Party Wall Generator" SizeToContent="Height" Width="400"
+    WindowStartupLocation="CenterScreen"
+    ResizeMode="NoResize"
+    Background="#F5F5F5"
+    FontFamily="Segoe UI">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Selection Section -->
+        <GroupBox Header="1. Selección de Geometría" Grid.Row="0" Margin="0,0,0,10" Padding="10">
+            <StackPanel>
+                <Grid Margin="0,0,0,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Recorrido (Líneas):" VerticalAlignment="Center"/>
+                    <Button x:Name="BtnSelectPath" Content="Seleccionar Recorrido" Width="150" Height="25" Click="BtnSelectPath_Click" Background="#E0E0E0" BorderBrush="#CCCCCC"/>
+                </Grid>
+                <TextBlock x:Name="LblPathStatus" Text="No seleccionado" Foreground="Red" FontStyle="Italic" Margin="0,0,0,10" HorizontalAlignment="Right"/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Host (Terreno/Suelo):" VerticalAlignment="Center"/>
+                    <Button x:Name="BtnSelectHost" Content="Seleccionar Host" Width="150" Height="25" Click="BtnSelectHost_Click" Background="#E0E0E0" BorderBrush="#CCCCCC"/>
+                </Grid>
+                <TextBlock x:Name="LblHostStatus" Text="No seleccionado" Foreground="Red" FontStyle="Italic" Margin="0,0,0,0" HorizontalAlignment="Right"/>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Components Section -->
+        <GroupBox Header="2. Configuración de Componentes" Grid.Row="1" Margin="0,0,0,10" Padding="10">
+            <StackPanel>
+                <TextBlock Text="Tipo de Poste (Columna):" Margin="0,0,0,5"/>
+                <ComboBox x:Name="CmbColumns" Height="25" Margin="0,0,0,10" DisplayMemberPath="Name"/>
+
+                <TextBlock Text="Tipo de Panel (Muro):" Margin="0,0,0,5"/>
+                <ComboBox x:Name="CmbWalls" Height="25" Margin="0,0,0,0" DisplayMemberPath="Name"/>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Parameters Section -->
+        <GroupBox Header="3. Parámetros de Diseño" Grid.Row="2" Margin="0,0,0,10" Padding="10">
+            <StackPanel>
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="80"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Distancia entre Postes (m):" VerticalAlignment="Center"/>
+                    <TextBox x:Name="TxtDistance" Text="1.0" Height="25" Grid.Column="1" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                </Grid>
+
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="80"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Altura del Panel (m):" VerticalAlignment="Center" ToolTip="La altura será constante en todos los tramos."/>
+                    <TextBox x:Name="TxtWallHeight" Text="2.10" Height="25" Grid.Column="1" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="120"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Justificación:" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="CmbJustification" Height="25" Grid.Column="1">
+                        <ComboBoxItem Content="Inicio" IsSelected="True"/>
+                        <ComboBoxItem Content="Centro"/>
+                        <ComboBoxItem Content="Final"/>
+                    </ComboBox>
+                </Grid>
+            </StackPanel>
+        </GroupBox>
+
+        <TextBlock x:Name="LblError" Text="" Foreground="Red" TextWrapping="Wrap" Grid.Row="5" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+
+        <!-- Action Button -->
+        <Button x:Name="BtnGenerate" Content="Generar Party Wall" Grid.Row="6" Height="35" Background="#007ACC" Foreground="White" FontWeight="Bold" Click="BtnGenerate_Click" BorderThickness="0" IsEnabled="False"/>
+    </Grid>
+</Window>

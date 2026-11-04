@@ -1,0 +1,6 @@
+title: "Colors"
+author: "Archiplan-ER"
+tooltip: "Asignación y gestión de esquemas de color de Rooms."
+layout:
+  - AssignColors
+  - ColorSchemeManager

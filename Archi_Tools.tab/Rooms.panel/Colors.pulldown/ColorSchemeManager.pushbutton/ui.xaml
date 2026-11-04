@@ -1,0 +1,224 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Color Scheme Manager" Height="720" Width="620"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F5F4" Foreground="#333333"
+        FontFamily="Lato Light" FontSize="12">
+
+    <!-- Paleta ARCHIPLAN: White Smoke #F5F5F4, Graphite #333333,
+         Terracotta Clay #B26E63, Porcelain #FFFFF9, Silver #A1A1A0,
+         Pale Slate #C7C5CD.
+
+         Las dos acciones de esta herramienta (limpiar fantasmas y filtrar
+         visibilidad) son dos preguntas sobre la MISMA tabla, las entradas
+         del scheme: "se usa?" y "se ve?". Por eso comparten una sola
+         lista en vez de ser dos flujos encadenados. -->
+
+    <Window.Resources>
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#B26E63"/>
+            <Setter Property="Foreground" Value="#FFFFF9"/>
+            <Setter Property="FontFamily" Value="Lato"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="12,7"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="8,0,0,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="2">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4,0"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#9C5D53"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#C7C5CD"/>
+                    <Setter Property="Foreground" Value="#F5F5F4"/>
+                    <Setter Property="Cursor" Value="Arrow"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="SecondaryButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="Background" Value="#333333"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#4A4A4A"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#C7C5CD"/>
+                    <Setter Property="Foreground" Value="#F5F5F4"/>
+                    <Setter Property="Cursor" Value="Arrow"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#FFFFF9"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="FontFamily" Value="Lato"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#C7C5CD"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="2">
+                            <Grid>
+                                <TextBlock x:Name="watermark" Text="{TemplateBinding Tag}"
+                                           Foreground="#A1A1A0" FontStyle="Italic"
+                                           Margin="7,0,7,0" VerticalAlignment="Center"
+                                           IsHitTestVisible="False" Visibility="Collapsed"/>
+                                <ScrollViewer x:Name="PART_ContentHost" Margin="5,0,5,0"
+                                              VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Text" Value=""/>
+                                    <Condition Property="IsFocused" Value="False"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="watermark" Property="Visibility" Value="Visible"/>
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="FontFamily" Value="Lato"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="Padding" Value="6,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Lato"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Foreground" Value="#A1A1A0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="ARCHIPLAN  ·  COLOR FILL SCHEME" FontFamily="Lato" FontSize="10"
+                   Foreground="#B26E63" Margin="0,0,0,8"/>
+
+        <!-- Categoria (Rooms/Areas) + Area Scheme -->
+        <Grid Grid.Row="1" Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel x:Name="category_row" Grid.Column="0" Orientation="Horizontal"/>
+            <TextBlock x:Name="area_scheme_label" Grid.Column="2" Text="Area Scheme" Margin="0,0,8,0"
+                       Style="{StaticResource FieldLabel}"/>
+            <ComboBox x:Name="area_scheme_cb" Grid.Column="3" Width="168"/>
+        </Grid>
+
+        <!-- Color Scheme -->
+        <Grid Grid.Row="2" Margin="0,0,0,4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Color Scheme" Margin="0,0,8,0"
+                       Style="{StaticResource FieldLabel}"/>
+            <ComboBox x:Name="scheme_cb" Grid.Column="1"/>
+        </Grid>
+
+        <TextBlock Grid.Row="3" Margin="0,0,0,10" FontSize="10" Foreground="#A1A1A0"
+                   Text="Alcance: todas las entradas del scheme, contadas sobre todo el proyecto."/>
+
+        <Rectangle Grid.Row="4" Height="3" Fill="#B26E63" HorizontalAlignment="Left" Width="48" Margin="0,0,0,12"/>
+
+        <!-- Preseleccion de visibilidad usando otro parametro -->
+        <Border Grid.Row="5" Background="#FFFFF9" BorderBrush="#C7C5CD" BorderThickness="1"
+                CornerRadius="2" Padding="10,8" Margin="0,0,0,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Preseleccionar visibles por" Margin="0,0,8,0"
+                           Style="{StaticResource FieldLabel}"/>
+                <ComboBox x:Name="preselect_cb" Grid.Column="1"/>
+                <Button x:Name="preselect_btn" Grid.Column="2" Content="Preseleccionar..."
+                        Style="{StaticResource SecondaryButton}"
+                        ToolTip="Marca y desmarca las casillas de la lista segun los valores que elija. No escribe nada en el modelo hasta que pulse Aplicar visibilidad."/>
+            </Grid>
+        </Border>
+
+        <!-- Acciones masivas + estado -->
+        <Grid Grid.Row="6" Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="search_tb" Grid.Column="0" Tag="Buscar un valor..." Margin="0,0,12,0"/>
+            <Button x:Name="check_all_btn" Content="Marcar todo" Grid.Column="1" Margin="0,0,8,0"
+                    Style="{StaticResource SecondaryButton}"/>
+            <Button x:Name="uncheck_all_btn" Content="Desmarcar todo" Grid.Column="2" Margin="0"
+                    Style="{StaticResource SecondaryButton}"/>
+        </Grid>
+
+        <Border Grid.Row="7" BorderBrush="#C7C5CD" BorderThickness="1" CornerRadius="2" Background="#FFFFF9">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel x:Name="rows_panel" Margin="8"/>
+            </ScrollViewer>
+        </Border>
+
+        <Grid Grid.Row="8" Margin="0,12,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock x:Name="status_txt" Grid.Row="0" Grid.ColumnSpan="4" Text="" FontSize="11"
+                       Foreground="#A1A1A0" TextWrapping="Wrap" Margin="0,0,0,10"/>
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,0,12,0" VerticalAlignment="Center"
+                       Text="Marcado = visible en el scheme" FontSize="10" Foreground="#A1A1A0"/>
+            <Button x:Name="close_btn" Grid.Row="1" Grid.Column="1" Content="Cerrar"
+                    Style="{StaticResource SecondaryButton}"/>
+            <Button x:Name="clean_btn" Grid.Row="1" Grid.Column="2" Content="Limpiar 0 fantasma..."
+                    Style="{StaticResource SecondaryButton}"
+                    ToolTip="Elimina del scheme las entradas que ya no usa ningun Room/Area (el signo - rojo de Revit), en bloque."/>
+            <Button x:Name="apply_btn" Grid.Row="1" Grid.Column="3" Content="Aplicar visibilidad"
+                    Style="{StaticResource PrimaryButton}"/>
+        </Grid>
+    </Grid>
+</Window>

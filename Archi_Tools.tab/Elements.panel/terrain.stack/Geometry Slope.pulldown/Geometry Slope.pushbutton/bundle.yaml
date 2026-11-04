@@ -1,0 +1,11 @@
+title: "Geometry Slope"
+author: "Archiplan-ER"
+tooltip: |
+  Aplica una pendiente homogénea usando Modify Sub Elements.
+  
+  Instrucciones:
+  1. Selecciona un Floor o Toposolid.
+  2. Ingresa el porcentaje (%) de pendiente.
+  3. Selecciona la arista base que servirá de origen.
+  
+  El script elevará los puntos necesarios para crear una superficie inclinada perfecta.

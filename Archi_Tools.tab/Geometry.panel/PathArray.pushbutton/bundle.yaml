@@ -1,0 +1,12 @@
+title: "Path Array"
+author: "Archiplan-ER"
+tooltip: |
+  Clona y alinea elementos a lo largo de un recorrido de líneas o curvas.
+
+  Instrucciones:
+  1. Selecciona el elemento host a repetir (FamilyInstance: mobiliario, pilar, vegetación, etc.).
+  2. Ejecuta la herramienta.
+  3. Selecciona el recorrido (Detail Lines o Model Lines).
+  4. Define la separación por distancia o por cantidad de copias, y ejecuta el array.
+
+  Opcionalmente las copias se orientan tangentes a la curva del recorrido.

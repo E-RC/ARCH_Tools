@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Warnings Analyzer</title>
+<!-- Lato si hay internet; sin red cae a Segoe UI. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header>
+  <div class="brand">
+    <svg viewBox="0 0 24 24"><path d="M12 3 2.5 20h19Z"/><path d="M12 10v4.5M12 17.2v.1"/></svg>
+    <div><h1>Warnings Analyzer</h1><div class="meta"><span id="status" class="status-dot"></span><span id="model">—</span> · <span id="meta">Leyendo warnings…</span></div></div>
+  </div>
+  <div class="actions">
+    <button id="btn-csv" title="Exporta a CSV los warnings del filtro actual, un elemento por fila">
+      <svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 19h16"/></svg>Exportar CSV</button>
+    <button id="btn-scan" class="primary" title="Vuelve a leer los warnings del modelo (F5)">
+      <svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg>Actualizar</button>
+  </div>
+</header>
+
+<section class="kpis" id="kpis"></section>
+
+<section class="charts">
+  <div class="card"><h3>Tipos más frecuentes<span class="hint">clic para abrir</span></h3><div id="chart-types"></div></div>
+  <div class="card"><h3>Prioridad<span class="hint">clic para filtrar</span></h3><div id="chart-prio"></div></div>
+  <div class="card"><h3>Warnings por<div class="tabs" id="dist-tabs"></div></h3><div id="chart-dist"></div></div>
+  <div class="card trend"><h3>Tendencia<span class="hint">últimos 30 registros</span></h3><div id="chart-trend"></div></div>
+</section>
+
+<section class="work">
+  <aside class="sidebar">
+    <div class="toolbar">
+      <input type="search" id="search" placeholder="Buscar texto, ID, categoría, nivel…">
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="types" id="types"></div>
+  </aside>
+
+  <section class="detail">
+    <div id="detail-body"></div>
+    <div class="actionbar">
+      <span class="count" id="sel-count"></span>
+      <button data-act="select" data-needs-sel title="Selecciona en Revit los elementos de los warnings marcados">
+        <svg viewBox="0 0 24 24"><path d="m4 4 7 17 2.5-7.5L21 11Z"/></svg>Seleccionar</button>
+      <button data-act="show" data-needs-sel title="Selecciona y hace zoom (abre una vista donde se vean)">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M11 8v6M8 11h6"/></svg>Mostrar</button>
+      <button data-act="isolate" data-needs-sel title="Aislamiento temporal en la vista activa">
+        <svg viewBox="0 0 24 24"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9Z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9"/></svg>Aislar</button>
+      <button data-act="hide" data-needs-sel title="Ocultamiento temporal en la vista activa">
+        <svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 22 12a14 14 0 0 1-2.5 3.2M6.6 6.6A14.5 14.5 0 0 0 2 12s3.6 7 10 7a9.6 9.6 0 0 0 5.4-1.6"/></svg>Ocultar</button>
+      <button data-act="box" data-needs-sel title="Abre tu vista 3D de warnings con caja de sección ajustada a los elementos">
+        <svg viewBox="0 0 24 24"><path d="M3 7h14v14H3Z"/><path d="M3 7l4-4h14v14l-4 4M17 7l4-4"/></svg>Caja 3D</button>
+      <span class="sep"></span>
+      <button data-act="reset" title="Quita el aislamiento/ocultamiento temporal de la vista activa">
+        <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg>Restablecer vista</button>
+      <button data-act="colorize" title="Colorea en la vista activa los elementos del filtro actual según prioridad">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="8" cy="10" r="1.3"/><circle cx="12" cy="7.5" r="1.3"/><circle cx="16" cy="10" r="1.3"/><path d="M12 21a2 2 0 0 1 0-4h2a3 3 0 0 0 3-3"/></svg>Colorear vista</button>
+      <button data-act="uncolor" title="Quita los colores que puso el analizador en la vista activa">
+        <svg viewBox="0 0 24 24"><path d="m7 21-4-4L14 6l4 4-7 7M7 21h14"/></svg>Quitar color</button>
+      <span class="sep"></span>
+      <button data-act="accept" data-needs-sel title="Marca como intencional: sale de los conteos (se guarda por modelo)">
+        <svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg>Aceptar</button>
+      <button data-act="reopen" data-needs-sel title="Vuelve a contar los warnings aceptados marcados">Reabrir</button>
+      <label title="Incluye los elementos secundarios (borde punteado) en las acciones"><input type="checkbox" id="additional" checked>Incluir secundarios</label>
+    </div>
+  </section>
+</section>
+
+<footer>ARCHIPLAN · Warnings Analyzer — Clic en un ID: mostrar · Ctrl+clic: aislar · Esc: desmarcar · F5: actualizar. Los IDs con borde punteado son elementos secundarios del warning.</footer>
+<div id="toast"></div>
+
+<script src="rules.js"></script>
+<script src="mock.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

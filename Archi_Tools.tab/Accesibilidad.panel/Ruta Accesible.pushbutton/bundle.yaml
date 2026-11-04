@@ -1,0 +1,11 @@
+title: "Ruta Accesible"
+author: "Archiplan-ER"
+tooltip: |
+  Crea regiones de relleno para rutas accesibles.
+  
+  Instrucciones:
+  1. Seleccione líneas de detalle (ejes de la ruta).
+  2. Ejecute el comando.
+  3. Indique el ancho y tipo de región en la ventana.
+  
+  El plugin generará la ruta, aplicará radios de giro de 150cm y agrupará el resultado.

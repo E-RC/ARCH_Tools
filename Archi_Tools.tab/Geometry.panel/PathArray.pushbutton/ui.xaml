@@ -1,0 +1,95 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Path Array" Height="Auto" Width="440"
+        WindowStartupLocation="CenterScreen" ResizeMode="CanResizeWithGrip"
+        Background="#F5F5F5" FontFamily="Segoe UI" SizeToContent="Height" MinHeight="420">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="0,5"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Background" Value="#E0E0E0"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+    </Window.Resources>
+
+    <Border Padding="15">
+        <StackPanel>
+            <TextBlock Text="Path Array" FontSize="18" FontWeight="Bold" Margin="0,0,0,15" Foreground="#1a1a2e"/>
+
+            <!-- 1. Host -->
+            <GroupBox Header="1. Elemento Host" Padding="10" Margin="0,0,0,10" BorderBrush="#D0D0D0">
+                <StackPanel>
+                    <Button x:Name="btnSelectHost" Content="Seleccionar Elemento Host / Ejemplar"/>
+                    <TextBlock x:Name="lblHostStatus" Text="— Sin seleccionar" Foreground="#888888"
+                               FontStyle="Italic" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- 2. Recorrido -->
+            <GroupBox Header="2. Recorrido" Padding="10" Margin="0,0,0,10" BorderBrush="#D0D0D0">
+                <StackPanel>
+                    <Button x:Name="btnSelectPath" Content="Seleccionar Recorrido (Líneas / Curvas)"/>
+                    <TextBlock x:Name="lblPathStatus" Text="— Sin seleccionar" Foreground="#888888"
+                               FontStyle="Italic" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                    <!-- Resumen de longitud total del recorrido -->
+                    <Border x:Name="pnlPathInfo" Background="#EEF5FF" CornerRadius="4"
+                            Padding="8,6" Margin="0,6,0,0" Visibility="Collapsed">
+                        <StackPanel>
+                            <TextBlock x:Name="lblTotalLength"
+                                       FontWeight="SemiBold" Foreground="#0a4080"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- 3. Parámetros -->
+            <GroupBox Header="3. Parámetros" Padding="10" Margin="0,0,0,10" BorderBrush="#D0D0D0">
+                <StackPanel>
+                    <Grid Margin="0,0,0,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="80"/>
+                        </Grid.ColumnDefinitions>
+                        <RadioButton x:Name="optDistance" GroupName="Mode" Content="Por Distancia (m):" IsChecked="True" VerticalAlignment="Center"/>
+                        <TextBox x:Name="txtDistance" Grid.Column="1" Text="1.0" VerticalAlignment="Center" Padding="4"/>
+                    </Grid>
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="80"/>
+                        </Grid.ColumnDefinitions>
+                        <RadioButton x:Name="optCount" GroupName="Mode" Content="Por Cantidad (copias):" VerticalAlignment="Center"/>
+                        <TextBox x:Name="txtCount" Grid.Column="1" Text="10" VerticalAlignment="Center" Padding="4"/>
+                    </Grid>
+
+                    <!-- Panel de diagnóstico: distribución calculada -->
+                    <Border x:Name="pnlDistInfo" Background="#F0FFF0" CornerRadius="4"
+                            Padding="8,6" Margin="0,0,0,8" Visibility="Collapsed">
+                        <TextBlock x:Name="lblDistInfo" Foreground="#1a6b1a"
+                                   FontWeight="SemiBold" TextWrapping="Wrap"/>
+                    </Border>
+
+                    <CheckBox x:Name="chkAlignTangential" Content="Alinear orientación tangencial a la curva" IsChecked="True"/>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Botones -->
+            <Grid Margin="0,5,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="btnExecute" Content="Ejecutar Array"
+                        Background="#007ACC" Foreground="White" FontWeight="Bold"
+                        Grid.Column="0" Height="35" BorderThickness="0"/>
+                <Button x:Name="btnCancel" Content="Cancelar"
+                        Grid.Column="2" Height="35" Background="#E0E0E0" BorderThickness="0"/>
+            </Grid>
+
+        </StackPanel>
+    </Border>
+</Window>
