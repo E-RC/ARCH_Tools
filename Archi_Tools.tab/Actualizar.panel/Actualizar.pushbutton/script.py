@@ -10,6 +10,8 @@ import os
 
 from pyrevit import forms
 
+from archi_common import identity
+
 MIN_PYREVIT_MAJOR = 7
 
 try:
@@ -94,6 +96,10 @@ def _update(repo):
 
 
 def _run():
+    if identity.is_lab():
+        _show(u"Esta es la copia de desarrollo (Archi_LAB): no se actualiza desde GitHub. "
+              u"Para actualizar, usa el botón Actualizar de la pestaña Archi_Tools.", warn=False)
+        return
     if not HAS_UPDATER:
         _show(u"Esta función requiere pyRevit 7.0.0.")
         return

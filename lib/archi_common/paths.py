@@ -3,11 +3,13 @@
 import errno
 import os
 
+from archi_common.identity import data_dir_name
+
 
 def user_data_path(*parts):
-    """Devuelve %APPDATA%\Archiplan\<parts> y crea la carpeta padre; no crea el archivo."""
+    """Devuelve %APPDATA%\<Archiplan o Archiplan_Lab>\<parts> y crea la carpeta padre; no crea el archivo."""
     base = os.environ.get("APPDATA") or os.path.expanduser("~")
-    path = os.path.join(base, "Archiplan", *parts)
+    path = os.path.join(base, data_dir_name(), *parts)
     parent = os.path.dirname(path)
     try:
         os.makedirs(parent)

@@ -28,15 +28,72 @@ reescribe en cada arranque.
 import logging
 import os
 
-from pyrevit import routes
-
 logger = logging.getLogger(__name__)
 
 API_NAME = "schedule_board"
 
-api = routes.API(API_NAME)
-
 _LOG_STARTED = []
+
+
+# UNA SOLA COPIA VIVA DE SCHEDULEBOARD
+# ------------------------------------
+# Con las extensiones Archiplan (Archi_Tools) y Archiplan_Lab (Archi_LAB)
+# cargadas a la vez, la API `schedule_board`, el pane (GUID fijo) y la URL
+# fija solo admiten una copia; la segunda en arrancar terminaria usando el
+# codigo de la primera. Por eso solo la copia "duena" registra algo. El
+# marcador `%LOCALAPPDATA%\ScheduleBoard\owner` dice cual: `lab` = Lab;
+# ausente o cualquier otra cosa = Tools (tools/scheduleboard_owner.ps1).
+#
+# Este bloque usa SOLO la libreria estandar y va ANTES de importar nada de
+# `schedule_board` ni de `archi_common`: el motor de arranque es persistente
+# y comparte modulos entre extensiones. Duplica a proposito el criterio de
+# `archi_common.identity` (is_lab_path / is_owner); un test comprueba que
+# coinciden.
+
+def _is_lab_startup(path):
+    """True si la carpeta que contiene este archivo termina en `_Lab.extension`."""
+    folder = os.path.basename(os.path.dirname(os.path.abspath(path)))
+    return folder.lower().endswith("_lab.extension")
+
+
+def _is_owner(is_lab, owner_value):
+    return bool(is_lab) == ((owner_value or "").strip().lower() == "lab")
+
+
+def _data_dir():
+    return os.path.join(
+        os.environ.get("LOCALAPPDATA") or os.path.expanduser("~"), "ScheduleBoard")
+
+
+def _read_owner():
+    try:
+        handle = open(os.path.join(_data_dir(), "owner"), "r")
+        try:
+            return handle.read()
+        finally:
+            handle.close()
+    except (IOError, OSError):
+        return None
+
+
+def _log_not_owner(is_lab):
+    """Anota en startup.log (al final, sin importar schedule_board) que esta copia cede. Nunca lanza."""
+    message = ("esta copia ({0}) NO es la duena de ScheduleBoard; no registra rutas, "
+               "pane ni suscripciones. Duena segun el marcador: {1}".format(
+                   "Archi_LAB" if is_lab else "Archi_Tools",
+                   "Archi_Tools" if is_lab else "Archi_LAB"))
+    logger.info("ScheduleBoard: %s", message)
+    try:
+        folder = _data_dir()
+        if not os.path.isdir(folder):
+            os.makedirs(folder)
+        handle = open(os.path.join(folder, "startup.log"), "a")
+        try:
+            handle.write(message + "\n")
+        finally:
+            handle.close()
+    except Exception:
+        pass
 
 
 def _log_path():
@@ -71,8 +128,10 @@ def _log(message):
 def register():
     """Registra todas las rutas de ScheduleBoard."""
     try:
+        from pyrevit import routes
         from schedule_board.api_routes import register_routes
 
+        api = routes.API(API_NAME)
         register_routes(api)
         _log("rutas registradas en /{0}/".format(API_NAME))
     except Exception as ex:
@@ -222,7 +281,11 @@ def silence_console():
     sys.stderr = sink
 
 
-register()
-register_pane()
-subscribe_changes()
-silence_console()
+_IS_LAB = _is_lab_startup(__file__)
+if _is_owner(_IS_LAB, _read_owner()):
+    register()
+    register_pane()
+    subscribe_changes()
+    silence_console()
+else:
+    _log_not_owner(_IS_LAB)

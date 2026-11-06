@@ -13,9 +13,30 @@ necesita vive en `schedule_board.window` (ver su encabezado).
   lo crea este clic, via `pane.show()` -> `ensure_content()`.
 """
 
-from pyrevit import forms
+from pyrevit import forms, script
 
-from schedule_board import pane, window
+from archi_common import identity
+
+# Archi_Tools y Archi_LAB conviven, pero ScheduleBoard solo puede estar vivo
+# en una de las dos (ver startup.py). Antes de importar schedule_board: esta
+# copia podria ser la que no registro nada.
+_IS_LAB = identity.is_lab_path(__file__)
+if not identity.is_owner(_IS_LAB, identity.read_owner_marker()):
+    forms.alert(
+        "ScheduleBoard is running from the other tab "
+        "({0}).\n\n"
+        "Only one copy can be alive per Revit session. To use the one in "
+        "this tab, run\n"
+        "tools/scheduleboard_owner.ps1 -Owner {1}\n"
+        "from the ARCH_Tools repository and restart Revit.".format(
+            "Archi_Tools" if _IS_LAB else "Archi_LAB",
+            "lab" if _IS_LAB else "tools"),
+        title="ScheduleBoard",
+        warn_icon=True,
+    )
+    script.exit()
+
+from schedule_board import pane, window  # noqa: E402
 
 uiapp = __revit__  # noqa: F821 - lo inyecta pyRevit
 
