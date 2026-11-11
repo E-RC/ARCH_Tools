@@ -28,6 +28,20 @@ def cruce(pa, pb):
     return (A, B, C)
 
 
+def quitar_cercanos(pts, tol=0.005):
+    """Quita los vertices a menos de `tol` del anterior (astillas del booleano).
+
+    Revit rechaza lineas menores a ShortCurveTolerance (~0.0026 pies).
+    """
+    out = []
+    for p in pts:
+        if not out or ((p[0] - out[-1][0]) ** 2 + (p[1] - out[-1][1]) ** 2) ** 0.5 >= tol:
+            out.append(p)
+    if len(out) > 1 and ((out[0][0] - out[-1][0]) ** 2 + (out[0][1] - out[-1][1]) ** 2) ** 0.5 < tol:
+        out.pop()
+    return out
+
+
 def fusionar_colineales(pts, tol=1e-6):
     """Quita los vertices intermedios de un lazo cerrado que no cambian la direccion."""
     n = len(pts)

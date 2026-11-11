@@ -12,18 +12,29 @@ from Autodesk.Revit import DB
 from archi_losas import geom
 
 BIP = DB.BuiltInParameter
-_PARAMS_PENDIENTE = (BIP.CURVE_IS_SLOPE_DEFINING, BIP.ROOF_SLOPE,
-                     BIP.DEFINES_CONSTANT_HEIGHT, BIP.CURVE_HEIGHT_OFFSET)
+# Orden obligatorio: en una linea nueva solo DEFINES_CONSTANT_HEIGHT es editable;
+# al activarlo se habilitan los otros tres (si no: "The parameter is read-only").
+_PARAMS_PENDIENTE = (BIP.DEFINES_CONSTANT_HEIGHT, BIP.CURVE_IS_SLOPE_DEFINING,
+                     BIP.ROOF_SLOPE, BIP.CURVE_HEIGHT_OFFSET)
 TOL_PLANO = 1e-6
 
 
 class _Avisos(DB.IFailuresPreprocessor):
-    """Los avisos de union/solape no deben abrir un dialogo modal."""
+    """Los avisos de union/solape no deben abrir un dialogo modal.
+
+    Los errores con resolucion (p. ej. "Can't keep wall and floor joined") se
+    resuelven con la accion por defecto de Revit: separar los elementos.
+    """
     def PreprocessFailures(self, acc):
+        resuelto = False
         for m in list(acc.GetFailureMessages()):
-            if m.GetSeverity() == DB.FailureSeverity.Warning:
+            sev = m.GetSeverity()
+            if sev == DB.FailureSeverity.Warning:
                 acc.DeleteWarning(m)
-        return DB.FailureProcessingResult.Continue
+            elif sev == DB.FailureSeverity.Error and m.HasResolutions():
+                acc.ResolveFailure(m)
+                resuelto = True
+        return DB.FailureProcessingResult.ProceedWithCommit if resuelto else DB.FailureProcessingResult.Continue
 
 
 def _plano_superior(doc, losa):
@@ -35,41 +46,51 @@ def _plano_superior(doc, losa):
 def _leer(doc, losa):
     """Contorno, plano y linea que define la pendiente de una losa."""
     sk = doc.GetElement(losa.SketchId)
-    lazos = list(sk.Profile)
-    if len(lazos) != 1 or any(not isinstance(c, DB.Line) for c in lazos[0]):
-        raise ValueError(u"La losa %d debe tener un solo contorno de lineas rectas." % losa.Id.IntegerValue)
-    pts = [(c.GetEndPoint(0).X, c.GetEndPoint(0).Y) for c in lazos[0]]
-    z = list(lazos[0])[0].GetEndPoint(0).Z
+    lazos = [list(lz) for lz in sk.Profile]
+    if not lazos or any(not isinstance(c, DB.Line) for lz in lazos for c in lz):
+        raise ValueError(u"La losa %d debe tener solo contornos de lineas rectas." % losa.Id.IntegerValue)
+    todos = _ordenar([[(c.GetEndPoint(0).X, c.GetEndPoint(0).Y) for c in lz] for lz in lazos])
+    pts, huecos = todos[0], todos[1:]
+    z = lazos[0][0].GetEndPoint(0).Z
     pend = [doc.GetElement(i) for i in sk.GetAllElements()]
     pend = [e for e in pend if isinstance(e, DB.ModelCurve)
             and e.get_Parameter(BIP.CURVE_IS_SLOPE_DEFINING).AsInteger() == 1]
     if len(pend) != 1:
         raise ValueError(u"La losa %d debe tener exactamente una linea que define la pendiente." % losa.Id.IntegerValue)
     c = pend[0].GeometryCurve
-    return {"losa": losa, "sk": sk, "pts": pts, "z": z, "plano": _plano_superior(doc, losa),
+    return {"losa": losa, "sk": sk, "pts": pts, "huecos": huecos, "z": z, "plano": _plano_superior(doc, losa),
             "lin": pend[0], "a": (c.GetEndPoint(0).X, c.GetEndPoint(0).Y),
             "b": (c.GetEndPoint(1).X, c.GetEndPoint(1).Y)}
 
 
-def _solido(pts, z):
-    if geom.area(pts) < 0:
+def _ordenar(lazos):
+    """Lazos de mayor a menor area: el primero es el exterior, el resto son huecos."""
+    return sorted(lazos, key=lambda p: -abs(geom.area(p)))
+
+
+def _curve_loop(pts, z, antihorario):
+    if (geom.area(pts) > 0) != antihorario:
         pts = pts[::-1]
     p = [DB.XYZ(x, y, z - 1.0) for x, y in pts]
     lazo = DB.CurveLoop()
     for i in range(len(p)):
         lazo.Append(DB.Line.CreateBound(p[i], p[(i + 1) % len(p)]))
-    return DB.GeometryCreationUtilities.CreateExtrusionGeometry([lazo], DB.XYZ.BasisZ, 2.0)
+    return lazo
+
+
+def _solido(pts, z, huecos=()):
+    lazos = [_curve_loop(pts, z, True)] + [_curve_loop(h, z, False) for h in huecos]
+    return DB.GeometryCreationUtilities.CreateExtrusionGeometry(lazos, DB.XYZ.BasisZ, 2.0)
 
 
 def _contorno(solido):
-    """Unico contorno exterior de la cara inferior de un solido, o error."""
+    """(exterior, huecos) de la cara inferior de un solido; error si no es una sola pieza."""
     caras = [f for f in solido.Faces if isinstance(f, DB.PlanarFace) and f.FaceNormal.Z < -0.99]
     if len(caras) != 1:
         raise ValueError(u"El resultado no es una zona continua (%d piezas)." % len(caras))
-    lazos = list(caras[0].GetEdgesAsCurveLoops())
-    if len(lazos) != 1:
-        raise ValueError(u"El resultado tiene huecos; no se puede dejar como una sola losa.")
-    return geom.fusionar_colineales([(c.GetEndPoint(0).X, c.GetEndPoint(0).Y) for c in lazos[0]])
+    lazos = _ordenar([geom.fusionar_colineales(geom.quitar_cercanos(
+        [(c.GetEndPoint(0).X, c.GetEndPoint(0).Y) for c in lz])) for lz in caras[0].GetEdgesAsCurveLoops()])
+    return lazos[0], lazos[1:]
 
 
 def _bool(a, b, tipo):
@@ -83,7 +104,7 @@ def calcular(doc, la, lb, valle=False):
     if recta is None:
         raise ValueError(u"Las dos losas tienen el mismo plano o son paralelas: no hay arista de cruce.")
     z = A["z"]
-    sa, sb = _solido(A["pts"], z), _solido(B["pts"], z)
+    sa, sb = _solido(A["pts"], z, A["huecos"]), _solido(B["pts"], z, B["huecos"])
     if _bool(sa, sb, DB.BooleanOperationsType.Intersect).Volume < 1e-6:
         raise ValueError(u"Las losas no se superponen.")
     union = _bool(sa, sb, DB.BooleanOperationsType.Union)
@@ -95,20 +116,24 @@ def calcular(doc, la, lb, valle=False):
         mitad = _solido(geom.semiplano(recta, lado, (cx, cy)), z)
         nuevo[datos["losa"].Id.IntegerValue] = _contorno(_bool(union, mitad, DB.BooleanOperationsType.Intersect))
     for d in (A, B):
-        d["nuevo"] = nuevo[d["losa"].Id.IntegerValue]
+        d["nuevo"], d["huecos_nuevo"] = nuevo[d["losa"].Id.IntegerValue]
         d["lin_nueva"] = _tramo_pendiente(d)
     return A, B
 
 
 def _tramo_pendiente(d):
-    """Tramo mas largo del contorno nuevo que sigue sobre la linea de pendiente original."""
-    pts, mejor = d["nuevo"], None
-    for i in range(len(pts)):
-        p, q = pts[i], pts[(i + 1) % len(pts)]
-        if geom.subsegmento(p, q, d["a"], d["b"]):
-            L = (q[0] - p[0]) ** 2 + (q[1] - p[1]) ** 2
-            if mejor is None or L > mejor[0]:
-                mejor = (L, i)
+    """(lazo, indice) del tramo mas largo del contorno nuevo sobre la linea de pendiente original.
+
+    El lazo 0 es el exterior; los demas, los huecos.
+    """
+    mejor = None
+    for k, pts in enumerate([d["nuevo"]] + d["huecos_nuevo"]):
+        for i in range(len(pts)):
+            p, q = pts[i], pts[(i + 1) % len(pts)]
+            if geom.subsegmento(p, q, d["a"], d["b"]):
+                L = (q[0] - p[0]) ** 2 + (q[1] - p[1]) ** 2
+                if mejor is None or L > mejor[0]:
+                    mejor = (L, (k, i))
     if mejor is None:
         raise ValueError(u"La linea de pendiente de la losa %d quedaria fuera del nuevo contorno."
                          % d["losa"].Id.IntegerValue)
@@ -116,29 +141,42 @@ def _tramo_pendiente(d):
 
 
 def _reescribir(doc, d):
-    sk, z = d["sk"], d["z"]
     sc = DB.SketchEditScope(doc, u"Unir losas: contorno")
-    sc.Start(sk.Id)
+    sc.Start(d["sk"].Id)
     t = DB.Transaction(doc, u"Unir losas: lineas")
     t.Start()
-    viejos = [i for i in sk.GetAllElements() if isinstance(doc.GetElement(i), DB.ModelCurve)]
+    try:
+        _crear_lineas(doc, d)
+        t.Commit()
+    except Exception:
+        # Sin esto el scope queda abierto y el RollBack posterior tumba Revit
+        if t.HasStarted():
+            t.RollBack()
+        sc.Cancel()
+        raise
+    sc.Commit(_Avisos())
+
+
+def _crear_lineas(doc, d):
+    sk, z = d["sk"], d["z"]
+    viejos =[i for i in sk.GetAllElements() if isinstance(doc.GetElement(i), DB.ModelCurve)]
     vals = [(p, d["lin"].get_Parameter(p).AsInteger() if d["lin"].get_Parameter(p).StorageType == DB.StorageType.Integer
              else d["lin"].get_Parameter(p).AsDouble()) for p in _PARAMS_PENDIENTE]
     ab_x, ab_y = d["b"][0] - d["a"][0], d["b"][1] - d["a"][1]
     for i in viejos:
         doc.Delete(i)
-    pts = d["nuevo"]
-    for i in range(len(pts)):
-        p, q = pts[i], pts[(i + 1) % len(pts)]
-        es_pend = (i == d["lin_nueva"])
-        if es_pend and (q[0] - p[0]) * ab_x + (q[1] - p[1]) * ab_y < 0:
-            p, q = q, p                  # conserva el sentido original de la linea
-        mc = doc.Create.NewModelCurve(DB.Line.CreateBound(DB.XYZ(p[0], p[1], z), DB.XYZ(q[0], q[1], z)), sk.SketchPlane)
-        if es_pend:
-            for bip, v in vals:
-                mc.get_Parameter(bip).Set(v)
-    t.Commit()
-    sc.Commit(_Avisos())
+    pend = None
+    for k, pts in enumerate([d["nuevo"]] + d["huecos_nuevo"]):
+        for i in range(len(pts)):
+            p, q = pts[i], pts[(i + 1) % len(pts)]
+            es_pend = ((k, i) == d["lin_nueva"])
+            if es_pend and (q[0] - p[0]) * ab_x + (q[1] - p[1]) * ab_y < 0:
+                p, q = q, p              # conserva el sentido original de la linea
+            mc = doc.Create.NewModelCurve(DB.Line.CreateBound(DB.XYZ(p[0], p[1], z), DB.XYZ(q[0], q[1], z)), sk.SketchPlane)
+            if es_pend:
+                pend = mc.Id
+    for bip, v in vals:
+        doc.GetElement(pend).get_Parameter(bip).Set(v)   # se vuelve a leer: Revit puede regenerar la linea
 
 
 def aplicar(doc, A, B):

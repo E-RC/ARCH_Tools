@@ -2,7 +2,7 @@
     "name": "Archiplan",
     "description": "Herramientas de Archiplan para Revit: automatizaciones de modelado, auditoria y gestion de schedules con ScheduleBoard.",
     "author": "Archiplan-ER",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "builtin": "False",
     "default_enabled": "True",
     "rocket_mode_compatible": "True"
