@@ -188,7 +188,7 @@
                                   Background="Transparent" BorderThickness="0" HeadersVisibility="Column"
                                   GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="{StaticResource Outline}"
                                   RowBackground="Transparent" AlternatingRowBackground="{StaticResource SurfaceContainer}"
-                                  SelectionMode="Single" CanUserResizeRows="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                  SelectionMode="Extended" CanUserResizeRows="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Auto">
                             <DataGrid.Resources>
                                 <Style TargetType="DataGridColumnHeader">
                                     <Setter Property="Background" Value="#F5F5F4"/>

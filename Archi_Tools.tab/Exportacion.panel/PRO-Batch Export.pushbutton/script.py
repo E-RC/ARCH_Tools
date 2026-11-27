@@ -94,7 +94,11 @@ class PROBatchExportWindow(forms.WPFWindow):
             self.all_sheet_rows.append(row)
             
         self.sheets_datagrid.ItemsSource = ObservableCollection[object](self.all_sheet_rows)
-        
+        # Clicks on the row checkboxes bubble up here (Shift/Ctrl multi-select support)
+        self.sheets_datagrid.AddHandler(
+            System.Windows.Controls.Primitives.ButtonBase.ClickEvent,
+            System.Windows.RoutedEventHandler(self.sheet_checkbox_Click))
+
         # Load Native PDF Paper Sizes
         paper_sizes = ["<Use Sheet Size>"]
         for name in sorted(list(System.Enum.GetNames(DB.ExportPaperFormat))):
@@ -508,6 +512,24 @@ class PROBatchExportWindow(forms.WPFWindow):
         self.update_datagrid_filter()
         self.update_live_preview()
 
+    def sheet_checkbox_Click(self, sender, args):
+        """Applies a row checkbox change to every highlighted row (Shift/Ctrl selection)."""
+        chk = args.OriginalSource
+        if not isinstance(chk, System.Windows.Controls.CheckBox):
+            return
+        row = chk.DataContext
+        if not isinstance(row, SheetRow):
+            return
+        highlighted = list(self.sheets_datagrid.SelectedItems)
+        if row in highlighted and len(highlighted) > 1:
+            value = bool(chk.IsChecked)
+            for r in highlighted:
+                r.IsSelected = value
+            if getattr(self.hide_unselected_chk, 'IsChecked', False):
+                self.update_datagrid_filter()
+            else:
+                self.sheets_datagrid.Items.Refresh()
+
     def select_none_btn_Click(self, sender, args):
         for row in self.all_sheet_rows:
             row.IsSelected = False
@@ -669,15 +691,33 @@ class PROBatchExportWindow(forms.WPFWindow):
                 forms.alert("Error al cargar el perfil:\n{}".format(e))
 
     def save_profile_btn_Click(self, sender, args):
-        profile_name = forms.ask_for_string(prompt="Ingrese el nombre para el nuevo perfil:", title="Guardar Perfil")
+        current = self.profiles_cb.SelectedItem
+        profile_name = None
+        if current:
+            opt_overwrite = u"Sobrescribir '{}'".format(current)
+            opt_new = u"Guardar como perfil nuevo..."
+            choice = forms.alert(u"¿Cómo desea guardar la configuración actual?",
+                                 title="Guardar Perfil", options=[opt_overwrite, opt_new])
+            if not choice:
+                return
+            if choice == opt_overwrite:
+                profile_name = current
+
         if not profile_name:
-            return
-            
-        # Clean the name for Windows file system
-        profile_name = self.clean_filename(profile_name)
-        if not profile_name:
-            forms.alert("Nombre de perfil inválido.")
-            return
+            profile_name = forms.ask_for_string(prompt="Ingrese el nombre para el nuevo perfil:", title="Guardar Perfil")
+            if not profile_name:
+                return
+
+            # Clean the name for Windows file system
+            profile_name = self.clean_filename(profile_name)
+            if not profile_name:
+                forms.alert("Nombre de perfil inválido.")
+                return
+
+            # A typed name that already exists overwrites only after confirmation
+            if os.path.exists(os.path.join(self.profiles_dir, profile_name + ".json")):
+                if not forms.alert(u"Ya existe el perfil '{}'. ¿Desea sobrescribirlo?".format(profile_name), yes=True, no=True):
+                    return
             
         if not os.path.exists(self.profiles_dir):
             try:
